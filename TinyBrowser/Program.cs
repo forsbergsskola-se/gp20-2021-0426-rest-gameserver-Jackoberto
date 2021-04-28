@@ -19,6 +19,8 @@ namespace TinyBrowser
                 var httpResult = HttpRequest(CurrentSite, subPath);
             
                 SaveToFile(httpResult);
+                var title = GetTitle(httpResult);
+                Console.WriteLine($"Title: {title}");
                 var links = GetLinks(httpResult).ToArray();
                 for (var i = 0; i < links.Length; i++)
                 {
@@ -27,8 +29,18 @@ namespace TinyBrowser
 
                 var readLine = Console.ReadLine();
                 var userChose = int.Parse(readLine);
-                subPath = links[userChose - 1];
+                var chosenLink = links[userChose - 1];
+                subPath = subPath.CombineUri(chosenLink);
+                subPath = subPath.TrimStart('/');
             }
+        }
+
+        private static string GetTitle(string html)
+        {
+            var startIndex = html.IndexOf("<title>", StringComparison.Ordinal) + 7;
+            var endIndex = html.IndexOf("</title>", StringComparison.Ordinal);
+            var title = html.Substring(startIndex, endIndex - startIndex);
+            return title;
         }
 
         static IEnumerable<string> GetLinks(string html)
@@ -45,7 +57,7 @@ namespace TinyBrowser
             return links;
         }
         
-        static IEnumerable<string> GetTitles(string html)
+        static IEnumerable<string> GetDescriptions(string html)
         {
             var splits = html.Split("<a href=\"");
             var titles = new List<string>();
@@ -59,14 +71,16 @@ namespace TinyBrowser
             return titles;
         }
 
-        static string HttpRequest(string url, string subPath)
+        static string HttpRequest(string url, string subUrl)
         {
             var result = string.Empty;
+            var fullUrl = string.IsNullOrEmpty(subUrl) ? url : url.CombineUri(subUrl);
+            Console.WriteLine(fullUrl);
             using var tcpClient = new TcpClient(url, 80);
             using var stream = tcpClient.GetStream();
             var builder = new StringBuilder();
-            builder.AppendLine("GET / HTTP/1.1");
-            builder.AppendLine(!string.IsNullOrEmpty(subPath) ? $"Host: {url}/{subPath}" : $"Host: {url}");
+            builder.AppendLine($"GET /{subUrl} HTTP/1.1");
+            builder.AppendLine($"Host: {url}");
             builder.AppendLine("Connection: close");
             builder.AppendLine();
             var header = Encoding.ASCII.GetBytes(builder.ToString());
@@ -82,6 +96,23 @@ namespace TinyBrowser
         static void SaveToFile(string html)
         {
             File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "File.txt"), html);
+        }
+        
+        public static string CombineUri(string uri1, string uri2)
+        {
+            uri1 = uri1.TrimEnd('/');
+            uri2 = uri2.TrimStart('/');
+            return $"{uri1}/{uri2}";
+        }
+    }
+
+    public static class StringExtensions
+    {
+        public static string CombineUri(this string uri1, string uri2)
+        {
+            uri1 = uri1.TrimEnd('/');
+            uri2 = uri2.TrimStart('/');
+            return $"{uri1}/{uri2}";
         }
     }
 }
