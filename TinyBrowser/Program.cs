@@ -9,15 +9,25 @@ namespace TinyBrowser
 {
     class Program
     {
+        public static string CurrentSite;
         static void Main(string[] args)
         {
-            var httpResult = HttpRequest("acme.com");
-            
-            SaveToFile(httpResult);
-            var links = GetLinks(httpResult).ToArray();
-            for (var i = 0; i < links.Length; i++)
+            CurrentSite = "acme.com";
+            var subPath = "";
+            while (true)
             {
-                Console.WriteLine($"{i+1}: {links[i]}");
+                var httpResult = HttpRequest(CurrentSite, subPath);
+            
+                SaveToFile(httpResult);
+                var links = GetLinks(httpResult).ToArray();
+                for (var i = 0; i < links.Length; i++)
+                {
+                    Console.WriteLine($"{i+1}: {links[i]}");
+                }
+
+                var readLine = Console.ReadLine();
+                var userChose = int.Parse(readLine);
+                subPath = links[userChose - 1];
             }
         }
 
@@ -49,14 +59,14 @@ namespace TinyBrowser
             return titles;
         }
 
-        static string HttpRequest(string url)
+        static string HttpRequest(string url, string subPath)
         {
             var result = string.Empty;
             using var tcpClient = new TcpClient(url, 80);
             using var stream = tcpClient.GetStream();
             var builder = new StringBuilder();
             builder.AppendLine("GET / HTTP/1.1");
-            builder.AppendLine($"Host: {url}");
+            builder.AppendLine(!string.IsNullOrEmpty(subPath) ? $"Host: {url}/{subPath}" : $"Host: {url}");
             builder.AppendLine("Connection: close");
             builder.AppendLine();
             var header = Encoding.ASCII.GetBytes(builder.ToString());
