@@ -14,23 +14,39 @@ namespace TinyBrowser
             var httpResult = HttpRequest("acme.com");
             
             SaveToFile(httpResult);
-            foreach (var link in GetLinks(httpResult)) 
-                Console.WriteLine(link);
+            var links = GetLinks(httpResult).ToArray();
+            for (var i = 0; i < links.Length; i++)
+            {
+                Console.WriteLine($"{i+1}: {links[i]}");
+            }
         }
 
         static IEnumerable<string> GetLinks(string html)
         {
             var splits = html.Split("<a href=\"");
-            var completedString = new List<string>();
+            var links = new List<string>();
             splits = splits.Skip(1).ToArray();
             for (var i = 0; i < splits.Length; i++)
             {
-                splits[i] = splits[i].Remove(splits[i].IndexOf("</a>", StringComparison.Ordinal));
-                var chars = splits[i].TakeWhile(c => c != '"');
-                completedString.Add(new string(chars.ToArray()));
+                var link = splits[i].TakeWhile(c => c != '"');
+                links.Add(new string(link.ToArray()));
             }
 
-            return completedString;
+            return links;
+        }
+        
+        static IEnumerable<string> GetTitles(string html)
+        {
+            var splits = html.Split("<a href=\"");
+            var titles = new List<string>();
+            splits = splits.Skip(1).ToArray();
+            for (var i = 0; i < splits.Length; i++)
+            {
+                var title = splits[i].SkipWhile(c => c != '"');
+                titles.Add(new string(title.ToArray()));
+            }
+
+            return titles;
         }
 
         static string HttpRequest(string url)
