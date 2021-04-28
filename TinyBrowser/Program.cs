@@ -10,6 +10,7 @@ namespace TinyBrowser
     class Program
     {
         public static string CurrentSite;
+        private static Stack<string> subURLS = new ();
         static void Main(string[] args)
         {
             CurrentSite = "acme.com";
@@ -29,7 +30,13 @@ namespace TinyBrowser
 
                 var readLine = Console.ReadLine();
                 var userChose = int.Parse(readLine);
+                if (userChose == 0)
+                {
+                    subPath = subURLS.Count > 1 ? subURLS.Pop() : subURLS.Peek();
+                    continue;
+                }
                 var chosenLink = links[userChose - 1];
+                subURLS.Push(subPath);
                 subPath = subPath.CombineUri(chosenLink);
                 subPath = subPath.TrimStart('/');
             }
@@ -37,6 +44,8 @@ namespace TinyBrowser
 
         private static string GetTitle(string html)
         {
+            if (!html.Contains("<title>"))
+                return "NO TITLE";
             var startIndex = html.IndexOf("<title>", StringComparison.Ordinal) + 7;
             var endIndex = html.IndexOf("</title>", StringComparison.Ordinal);
             var title = html.Substring(startIndex, endIndex - startIndex);
