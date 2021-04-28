@@ -15,6 +15,7 @@ namespace TinyBrowser
         {
             CurrentSite = "acme.com";
             var subPath = "";
+            
             while (true)
             {
                 var httpResult = HttpRequest(CurrentSite, subPath);
@@ -28,18 +29,38 @@ namespace TinyBrowser
                     Console.WriteLine($"{i+1}: {links[i]}");
                 }
 
-                var readLine = Console.ReadLine();
-                var userChose = int.Parse(readLine);
+                var userChose = ListenForInput(links.Length);
+
                 if (userChose == 0)
                 {
                     subPath = subURLS.Count > 1 ? subURLS.Pop() : subURLS.Peek();
                     continue;
                 }
+
                 var chosenLink = links[userChose - 1];
                 subURLS.Push(subPath);
                 subPath = subPath.CombineUri(chosenLink);
-                subPath = subPath.TrimStart('/');
+                subPath = subPath.TrimStart('/'); 
+                
             }
+        }
+
+        static int ListenForInput(int pageAmount)
+        {
+            Console.WriteLine();
+            while (true)
+            {
+                Console.WriteLine("Type A Number To Open Link");
+                var readLine = Console.ReadLine();
+                if (int.TryParse(readLine, out var userChose))
+                {
+                    if (userChose <= pageAmount && userChose >= 0) 
+                        return userChose;
+                    Console.WriteLine($"{userChose} is not a valid link");
+                    continue;
+                }
+                Console.WriteLine($"{readLine} is not a valid number");    
+            } 
         }
 
         private static string GetTitle(string html)
