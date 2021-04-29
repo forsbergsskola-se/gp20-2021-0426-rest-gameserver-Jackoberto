@@ -2,7 +2,7 @@
 
 namespace GitHubBrowser
 {
-    public interface IOrganization
+    public interface IOrganization : IGitHubJson
     {
         public string Login { get; set; }
         public int Id { get; set; }

@@ -2,7 +2,7 @@ using System;
 
 namespace GitHubBrowser
 {
-    public interface IGitHubUser
+    public interface IGitHubUser : IGitHubJson
     {
         public string Login { get; set; }
         public int Id { get; set; }
