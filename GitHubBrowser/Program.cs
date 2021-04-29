@@ -37,8 +37,6 @@ namespace GitHubBrowser
                 }
                 
                 IGitHubUser response = JsonConvert.DeserializeObject<GitHubUser>(responseText);
-                // IGitHubUser response = new GitHubUser();
-                // JsonConvert.PopulateObject(responseText, response);
                 Console.WriteLine("What do you wanna know?");
                 while (true)
                 {
@@ -61,7 +59,6 @@ namespace GitHubBrowser
             var userWantsToKnow = Console.ReadLine();
             return (typeof(IGitHubUser).GetProperties())
                                         .FirstOrDefault(property => property.Name
-                                        .Replace("_", string.Empty)
                                         .Equals(userWantsToKnow
                                         .Replace(" ", string.Empty), StringComparison.OrdinalIgnoreCase));
         }
