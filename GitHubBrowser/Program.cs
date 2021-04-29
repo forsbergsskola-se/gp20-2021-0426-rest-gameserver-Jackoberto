@@ -59,7 +59,11 @@ namespace GitHubBrowser
         static PropertyInfo AskForProperty()
         {
             var userWantsToKnow = Console.ReadLine();
-            return (typeof(IGitHubUser).GetProperties()).FirstOrDefault(property => property.Name == userWantsToKnow);
+            return (typeof(IGitHubUser).GetProperties())
+                                        .FirstOrDefault(property => property.Name
+                                        .Replace("_", string.Empty)
+                                        .Equals(userWantsToKnow
+                                        .Replace(" ", string.Empty), StringComparison.OrdinalIgnoreCase));
         }
 
         static string AskForUser()
