@@ -26,7 +26,7 @@ namespace TinyBrowser
                 var links = GetLinks(httpResult).ToArray();
                 for (var i = 0; i < links.Length; i++)
                 {
-                    Console.WriteLine($"{i+1}: {links[i]}");
+                    Console.WriteLine($"{i+1} {links[i].Title}: ({links[i].Link})");
                 }
 
                 var userChose = ListenForInput(links.Length);
@@ -39,13 +39,13 @@ namespace TinyBrowser
                 
                 var chosenLink = links[userChose - 1];
                 subURLS.Push(currentUrl);
-                if (IsDomain(chosenLink))
+                if (IsDomain(chosenLink.Link))
                 {
-                    currentUrl = SplitLink(chosenLink);
+                    currentUrl = SplitLink(chosenLink.Link);
                 }
                 else
                 {
-                    subPath = currentUrl.path.CombineUri(chosenLink);
+                    subPath = currentUrl.path.CombineUri(chosenLink.Link);
                     subPath = subPath.TrimStart('/');
                     currentUrl.path = subPath;
                 }
@@ -78,7 +78,7 @@ namespace TinyBrowser
             Console.WriteLine();
             while (true)
             {
-                Console.WriteLine("Type A Number To Open Link");
+                Console.WriteLine("Type A Number To Open Link Or 0 To Go Back");
                 var readLine = Console.ReadLine();
                 if (int.TryParse(readLine, out var userChose))
                 {
@@ -101,39 +101,35 @@ namespace TinyBrowser
             return title;
         }
 
-        static IEnumerable<string> GetLinks(string html)
+        static IEnumerable<LinkAndTitle> GetLinks(string html)
         {
             var splits = html.Split("<a href=\"");
-            var links = new List<string>();
+            var linksAndTitles = new List<LinkAndTitle>();
             splits = splits.Skip(1).ToArray();
-            for (var i = 0; i < splits.Length; i++)
+            foreach (var t in splits)
             {
-                var link = splits[i].TakeWhile(c => c != '"');
-                links.Add(new string(link.ToArray()));
+                var link = t.TakeWhile(c => c != '"').ToArray();
+                var partAfterLink = t[link.Length..];
+                var startIndex = partAfterLink.IndexOf('>');
+                var endIndex = partAfterLink.IndexOf("</a>", StringComparison.Ordinal);
+                var title = partAfterLink.Substring(startIndex + 1, endIndex - startIndex - 1).Replace("<b>", "").Replace("</b>", "");
+                if (title.StartsWith("<img"))
+                    title = "Image";
+                linksAndTitles.Add(new LinkAndTitle()
+                {
+                    Link = new string(link),
+                    Title = title
+                });
             }
 
-            return links;
-        }
-        
-        static IEnumerable<string> GetDescriptions(string html)
-        {
-            var splits = html.Split("<a href=\"");
-            var titles = new List<string>();
-            splits = splits.Skip(1).ToArray();
-            for (var i = 0; i < splits.Length; i++)
-            {
-                var title = splits[i].SkipWhile(c => c != '"');
-                titles.Add(new string(title.ToArray()));
-            }
-
-            return titles;
+            return linksAndTitles;
         }
 
         static string HttpRequest(string url, string subUrl)
         {
             var result = string.Empty;
             var fullUrl = string.IsNullOrEmpty(subUrl) ? url : url.CombineUri(subUrl);
-            Console.WriteLine(fullUrl);
+            Console.WriteLine($"\nCurrent URL {fullUrl}");
             using var tcpClient = new TcpClient(url, 80); 
             var stream = tcpClient.GetStream();
             var builder = new StringBuilder();
