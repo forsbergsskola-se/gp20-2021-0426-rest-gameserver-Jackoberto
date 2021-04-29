@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,16 +9,16 @@ namespace TinyBrowser
 {
     class Program
     {
-        public static string CurrentSite;
-        private static Stack<string> subURLS = new ();
+        private static Stack<FullUrl> subURLS = new ();
         static void Main(string[] args)
         {
-            CurrentSite = "acme.com";
+            var currentSite = "acme.com";
             var subPath = "";
-            
+            var currentUrl = new FullUrl(currentSite, subPath);
+
             while (true)
             {
-                var httpResult = HttpRequest(CurrentSite, subPath);
+                var httpResult = HttpRequest(currentUrl.domain, currentUrl.path);
             
                 SaveToFile(httpResult);
                 var title = GetTitle(httpResult);
@@ -33,16 +33,44 @@ namespace TinyBrowser
 
                 if (userChose == 0)
                 {
-                    subPath = subURLS.Count > 1 ? subURLS.Pop() : subURLS.Peek();
+                    currentUrl = subURLS.Count > 1 ? subURLS.Pop() : subURLS.Peek();
                     continue;
                 }
-
-                var chosenLink = links[userChose - 1];
-                subURLS.Push(subPath);
-                subPath = subPath.CombineUri(chosenLink);
-                subPath = subPath.TrimStart('/'); 
                 
+                var chosenLink = links[userChose - 1];
+                subURLS.Push(currentUrl);
+                if (IsDomain(chosenLink))
+                {
+                    currentUrl = SplitLink(chosenLink);
+                }
+                else
+                {
+                    subPath = currentUrl.path.CombineUri(chosenLink);
+                    subPath = subPath.TrimStart('/');
+                    currentUrl.path = subPath;
+                }
             }
+        }
+
+        private static bool IsDomain(string link)
+        {
+            return link.StartsWith("http://");
+        }
+        
+        private static FullUrl SplitLink(string link)
+        {
+            link = link.Remove(0, 7);
+            var index = 0;
+            for (var i = 0; i < link.Length; i++)
+            {
+                if (link[i] == '/')
+                {
+                    index = i;
+                    break;
+                }
+            }
+            
+            return new FullUrl(link.Substring(0, index), link.Substring(index));
         }
 
         static int ListenForInput(int pageAmount)
@@ -106,8 +134,8 @@ namespace TinyBrowser
             var result = string.Empty;
             var fullUrl = string.IsNullOrEmpty(subUrl) ? url : url.CombineUri(subUrl);
             Console.WriteLine(fullUrl);
-            using var tcpClient = new TcpClient(url, 80);
-            using var stream = tcpClient.GetStream();
+            using var tcpClient = new TcpClient(url, 80); 
+            var stream = tcpClient.GetStream();
             var builder = new StringBuilder();
             builder.AppendLine($"GET /{subUrl} HTTP/1.1");
             builder.AppendLine($"Host: {url}");
@@ -115,11 +143,15 @@ namespace TinyBrowser
             builder.AppendLine();
             var header = Encoding.ASCII.GetBytes(builder.ToString());
             stream.Write(header, 0, header.Length);
-            var data = new byte[tcpClient.ReceiveBufferSize];
-            stream.Read(data, 0, tcpClient.ReceiveBufferSize);
-            result = Encoding.ASCII.GetString(data);
+            var streamReader = new StreamReader(stream);
+            // var data = new byte[tcpClient.ReceiveBufferSize];
+            // stream.Read(data, 0, tcpClient.ReceiveBufferSize);
+            // result = Encoding.ASCII.GetString(data);
+            result = streamReader.ReadToEnd();
             result = result.ToLower();
             result = result.Remove(result.IndexOf("</html>", StringComparison.Ordinal) + 7);
+            streamReader.Dispose();
+            stream.Dispose();
             return result;
         }
 
@@ -129,16 +161,6 @@ namespace TinyBrowser
         }
         
         public static string CombineUri(string uri1, string uri2)
-        {
-            uri1 = uri1.TrimEnd('/');
-            uri2 = uri2.TrimStart('/');
-            return $"{uri1}/{uri2}";
-        }
-    }
-
-    public static class StringExtensions
-    {
-        public static string CombineUri(this string uri1, string uri2)
         {
             uri1 = uri1.TrimEnd('/');
             uri2 = uri2.TrimStart('/');
