@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using GitHubBrowser.Startegies;
+using GitHubBrowser.Strategies;
 
 namespace GitHubBrowser
 {
@@ -7,7 +7,7 @@ namespace GitHubBrowser
     {
         private static async Task Main(string[] args)
         {
-            var app = new GitHubApplication(Strategies.DefaultStrategies);
+            var app = new GitHubApplication(StrategyContainer.DefaultStrategyContainer);
             await app.Start();
         }
     }

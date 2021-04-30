@@ -1,21 +1,21 @@
 ﻿using System;
 using GitHubBrowser.Data;
 
-namespace GitHubBrowser.Startegies
+namespace GitHubBrowser.Strategies
 {
-    public class OrgsStrategy : IStrategy
+    public class UserStrategy : IStrategy
     {
-        public string BaseUrl => "https://api.github.com/orgs";
+        public string BaseUrl => "https://api.github.com/users";
         public string AskForSearchParameters()
         {
-            Console.WriteLine("Write A GitHub Org To Search");
+            Console.WriteLine("Write A GitHub User To Search");
             var user = Console.ReadLine();
             return user;
         }
 
         public void DealWithProvidedJson(string json)
         {
-            GitHubApplication.PrintJsonInfo<Organization>(json);
+            GitHubApplication.PrintJsonInfo<GitHubUser>(json);
         }
     }
 }

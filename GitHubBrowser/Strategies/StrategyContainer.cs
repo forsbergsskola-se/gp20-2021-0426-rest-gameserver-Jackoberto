@@ -1,17 +1,17 @@
 ﻿using System.Collections.Generic;
 
-namespace GitHubBrowser.Startegies
+namespace GitHubBrowser.Strategies
 {
-    public class Strategies
+    public class StrategyContainer
     {
         public readonly Dictionary<string, IStrategy> strategies;
 
-        public Strategies(Dictionary<string, IStrategy> strategies)
+        public StrategyContainer(Dictionary<string, IStrategy> strategies)
         {
             this.strategies = strategies;
         }
 
-        public static Strategies DefaultStrategies => new Strategies(new Dictionary<string, IStrategy>
+        public static StrategyContainer DefaultStrategyContainer => new StrategyContainer(new Dictionary<string, IStrategy>
         {
             {"users", new UserStrategy()},
             {"orgs", new OrgsStrategy()},

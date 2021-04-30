@@ -1,4 +1,4 @@
-namespace GitHubBrowser.Startegies
+namespace GitHubBrowser.Strategies
 {
     public interface IStrategy
     {

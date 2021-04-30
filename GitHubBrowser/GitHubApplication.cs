@@ -4,7 +4,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using GitHubBrowser.Startegies;
+using GitHubBrowser.Strategies;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
@@ -12,12 +12,12 @@ namespace GitHubBrowser
 {
     public class GitHubApplication
     {
-        private readonly Strategies strategies;
-        private Dictionary<string, IStrategy> ApiStrategies => strategies.strategies;
+        private readonly Strategies.StrategyContainer strategyContainer;
+        private Dictionary<string, IStrategy> ApiStrategies => strategyContainer.strategies;
 
-        public GitHubApplication(Strategies strategies)
+        public GitHubApplication(Strategies.StrategyContainer strategyContainer)
         {
-            this.strategies = strategies;
+            this.strategyContainer = strategyContainer;
         }
 
         public async Task Start()
