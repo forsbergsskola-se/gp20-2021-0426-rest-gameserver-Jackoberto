@@ -1,4 +1,4 @@
-﻿namespace GitHubBrowser
+﻿namespace GitHubBrowser.Data
 {
     public interface ILicense
     {

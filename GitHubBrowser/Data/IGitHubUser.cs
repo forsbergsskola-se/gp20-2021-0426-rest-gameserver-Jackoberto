@@ -1,6 +1,6 @@
 using System;
 
-namespace GitHubBrowser
+namespace GitHubBrowser.Data
 {
     public interface IGitHubUser : IGitHubJson
     {

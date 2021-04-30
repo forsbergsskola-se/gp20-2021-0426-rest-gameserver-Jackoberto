@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace GitHubBrowser
+namespace GitHubBrowser.Data
 {
     public class Owner : IOwner
     {

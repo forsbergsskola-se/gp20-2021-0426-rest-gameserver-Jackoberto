@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace GitHubBrowser
+﻿namespace GitHubBrowser.Data
 {
-    public class GitHubUser : IGitHubUser
+    public interface IOwner
     {
         public string Login { get; set; }
         public int Id { get; set; }
@@ -22,19 +20,5 @@ namespace GitHubBrowser
         public string ReceivedEventsUrl { get; set; }
         public string Type { get; set; }
         public bool SiteAdmin { get; set; }
-        public string Name { get; set; }
-        public string Company { get; set; }
-        public string Blog { get; set; }
-        public string Location { get; set; }
-        public string Email { get; set; }
-        public string Hireable { get; set; }
-        public string Bio { get; set; }
-        public string TwitterUsername { get; set; }
-        public int PublicRepos { get; set; }
-        public int PublicGists { get; set; }
-        public int Followers { get; set; }
-        public int Following { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
     }
 }

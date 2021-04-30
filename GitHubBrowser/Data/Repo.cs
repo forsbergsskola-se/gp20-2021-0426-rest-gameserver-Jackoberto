@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace GitHubBrowser
+namespace GitHubBrowser.Data
 {
-    public interface IRepo
+    public class Repo : IRepo
     {
         public int Id { get; set; }
         public string NodeId { get; set; }

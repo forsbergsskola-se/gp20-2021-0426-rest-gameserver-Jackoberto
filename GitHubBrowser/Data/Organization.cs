@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace GitHubBrowser
+namespace GitHubBrowser.Data
 {
-    public interface IOrganization : IGitHubJson
+    public class Organization : IOrganization
     {
         public string Login { get; set; }
         public int Id { get; set; }
