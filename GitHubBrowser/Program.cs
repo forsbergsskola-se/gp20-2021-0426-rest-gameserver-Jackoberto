@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
-
+using GitHubBrowser.Startegies;
 
 namespace GitHubBrowser
 {
-    class Program
+    internal static class Program
     {
         private static async Task Main(string[] args)
         {

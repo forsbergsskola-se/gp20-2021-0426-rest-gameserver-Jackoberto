@@ -1,7 +1,7 @@
 ﻿using System;
 using GitHubBrowser.Data;
 
-namespace GitHubBrowser
+namespace GitHubBrowser.Startegies
 {
     public class UserStrategy : IStrategy
     {

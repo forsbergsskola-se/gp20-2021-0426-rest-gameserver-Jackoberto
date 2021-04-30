@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace GitHubBrowser
+namespace GitHubBrowser.Startegies
 {
     public class Strategies
     {
