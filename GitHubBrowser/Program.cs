@@ -15,16 +15,18 @@ namespace GitHubBrowser
     {
         private static Dictionary<string, Action<string>> _endMethods = new()
         {
-            {"User", AskAboutUser},
-            {"Organization", AskAboutOrg}
+            {"user", AskAboutUser},
+            {"orgs", AskAboutOrg},
+            {"repos", AskAboutRepo}
         };
-        
+
         private static Dictionary<string, Func<string>> _startMethods = new()
         {
             {"users", AskForUser},
-            {"orgs", AskForOrg}
+            {"orgs", AskForOrg},
+            {"repos", AskForRepo}
         };
-        
+
         private static JsonSerializerSettings _deserializerSettings;
 
         static async Task Main(string[] args)
@@ -39,20 +41,18 @@ namespace GitHubBrowser
             };
             while (true)
             {
-                var responseText = await GetResponse();
+                var (responseText, type) = await GetResponse();
                 if (responseText == string.Empty)
                     continue;
-                var response = JsonConvert.DeserializeObject<GitHubJson>(responseText, _deserializerSettings);
-                if (_endMethods.TryGetValue(response.Type, out var type))
+
+                if (_endMethods.TryGetValue(type, out var action))
                 {
-                    type.Invoke(responseText);
-                    continue;
+                    action.Invoke(responseText);
                 }
-                Console.WriteLine($"{response.Type} doesn't exist in the dictionary");
             }
         }
 
-        private static async Task<string> GetResponse()
+        private static async Task<Tuple<string, string>> GetResponse()
         {
             Console.WriteLine("What Do You Wanna Search For?");
             Console.Write("Possible Searches Are");
@@ -66,9 +66,11 @@ namespace GitHubBrowser
             if (startMethods.TryGetValue(input, out var func))
             {
                 var user = func.Invoke();
-                return await HttpRequest(input, user);
+                var response = await HttpRequest(input, user);
+                return new Tuple<string, string>(response, input);
             }
-            return string.Empty;
+            
+            return null;
         }
 
         private static async Task<string> HttpRequest(string path, string user)
@@ -92,7 +94,6 @@ namespace GitHubBrowser
                     Console.WriteLine($"The user {user} does not exist");
                 return string.Empty;
             }
-
             return responseText;
         }
         
@@ -101,14 +102,20 @@ namespace GitHubBrowser
             var response = JsonConvert.DeserializeObject<GitHubUser>(json, _deserializerSettings);
             GetPropertyValue(response);
         }
-        
+
         private static void AskAboutOrg(string json)
         {
             var response = JsonConvert.DeserializeObject<Organization>(json, _deserializerSettings);
             GetPropertyValue(response);
         }
+        
+        private static void AskAboutRepo(string json)
+        {
+            var response = JsonConvert.DeserializeObject<Repo>(json, _deserializerSettings);
+            GetPropertyValue(response);
+        }
 
-        private static void GetPropertyValue(IGitHubJson gitHubJson)
+        private static void GetPropertyValue(object gitHubJson)
         {
             PrintAllProperties(gitHubJson);
             /*while (true)
@@ -127,10 +134,9 @@ namespace GitHubBrowser
             }*/
         }
 
-        private static void PrintAllProperties(IGitHubJson gitHubJson)
+        private static void PrintAllProperties(object gitHubJson)
         {
             var properties = gitHubJson.GetType().GetProperties();
-            Console.WriteLine(gitHubJson.Type);
             foreach (var t in properties)
             {
                 var value = t.GetValue(gitHubJson) ?? "Null";
@@ -149,6 +155,13 @@ namespace GitHubBrowser
                                         .FirstOrDefault(property => property.Name
                                         .Equals(userWantsToKnow
                                         .Replace(" ", string.Empty), StringComparison.OrdinalIgnoreCase));
+        }
+        
+        private static string AskForRepo()
+        {
+            Console.WriteLine("Write A GitHub User And Repo Formatted Like {user}/{repo}");
+            var user = Console.ReadLine();
+            return user;
         }
 
         static string AskForUser()
