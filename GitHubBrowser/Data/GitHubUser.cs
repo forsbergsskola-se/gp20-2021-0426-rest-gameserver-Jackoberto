@@ -36,5 +36,21 @@ namespace GitHubBrowser.Data
         public int Following { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
+
+        public override string ToString() =>
+            $"{nameof(Login)}: {Login}\n" +
+            $"{nameof(Name)}: {(string.IsNullOrEmpty(Name) ? "Unknown" : Name)}\n" +
+            $"{nameof(Company)}: {(string.IsNullOrEmpty(Company) ? "Unknown" : Company)}\n" +
+            $"{nameof(Blog)}: {(string.IsNullOrEmpty(Blog) ? "User Has No Blog" : Blog)}\n" +
+            $"{nameof(Location)}: {(string.IsNullOrEmpty(Location) ? "Unknown" : Location)}\n" +
+            $"{nameof(Email)}: {(string.IsNullOrEmpty(Email) ? "Unknown" : Email)}\n" +
+            $"{nameof(Hireable)}: {(string.IsNullOrEmpty(Hireable) ? "False" : Hireable)}\n" +
+            $"{nameof(Bio)}: {(string.IsNullOrEmpty(Bio) ? "Empty" : Bio)}\n" +
+            $"{nameof(TwitterUsername)}: {(string.IsNullOrEmpty(TwitterUsername) ? "User Has No Twitter" : TwitterUsername)}\n" +
+            $"{nameof(PublicRepos)}: {PublicRepos}\n" +
+            $"Follower Count: {Followers}\n" +
+            $"Following Count: {Following}\n" +
+            $"{nameof(CreatedAt)}: {CreatedAt}\n" +
+            $"{nameof(UpdatedAt)}: {UpdatedAt}";
     }
 }
