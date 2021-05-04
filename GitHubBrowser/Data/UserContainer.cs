@@ -5,17 +5,17 @@ using System.Text;
 
 namespace GitHubBrowser.Data
 {
-    public class RepoContainer : IEnumerable<IRepo>
+    public class UserContainer : IEnumerable<IGitHubUser>
     {
-        public IRepo[] Repos { get; set; }
+        public IGitHubUser[] Users { get; set; }
 
-        public string GetRepoInfos()
+        public string GetUserInfos()
         {
             var str = new StringBuilder();
             str.AppendLine();
             foreach (var repo in this)
             {
-                str.AppendLine($"Name: {repo.Name}");
+                str.AppendLine($"Name: {repo.Login}");
                 str.AppendLine($"Url: {repo.HtmlUrl}");
                 str.AppendLine();
             }
@@ -23,7 +23,7 @@ namespace GitHubBrowser.Data
             return str.ToString();
         }
 
-        public IEnumerator<IRepo> GetEnumerator() => ((IEnumerable<IRepo>) Repos).GetEnumerator();
-        IEnumerator IEnumerable.GetEnumerator() => Repos.GetEnumerator();
+        public IEnumerator<IGitHubUser> GetEnumerator() => ((IEnumerable<IGitHubUser>) Users).GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => Users.GetEnumerator();
     }
 }

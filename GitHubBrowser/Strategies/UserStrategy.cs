@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using GitHubBrowser.Data;
 using Newtonsoft.Json;
 
@@ -23,8 +24,8 @@ namespace GitHubBrowser.Strategies
                               "User Info");
             Console.WriteLine(response.ToString());
             Console.WriteLine("What Do You Want To Get?");
-            Console.WriteLine("Possible Searches Are repos, followers");
-            
+            Console.WriteLine("Possible Searches Are repos, followers, following");
+            var parameterRegex = new Regex(@"\{([^\}]+)\}");
             var whatToDisplay = Console.ReadLine();
             if (whatToDisplay.Equals("repos", StringComparison.OrdinalIgnoreCase))
             {
@@ -35,19 +36,19 @@ namespace GitHubBrowser.Strategies
             {
                 PrintFollowers(response.FollowersUrl);
             }
+            
+            if (whatToDisplay.Equals("following", StringComparison.OrdinalIgnoreCase))
+            {
+                PrintFollowers(parameterRegex.Replace(response.FollowingUrl, ""));
+            }
         }
 
         private void PrintFollowers(string followersUrl)
         {
             var request = GitHubApplication.HttpRequest(followersUrl);
             var followers = JsonConvert.DeserializeObject<GitHubUser[]>(request);
-            Console.WriteLine();
-            foreach (var user in followers)
-            {
-                Console.WriteLine($"Name: {user.Login}");
-                Console.WriteLine($"Url: {user.HtmlUrl}");
-                Console.WriteLine();
-            }
+            var userContainer = new UserContainer() {Users = followers};
+            Console.WriteLine(userContainer.GetUserInfos());
         }
 
         private void PrintRepos(string reposUrl)
@@ -55,7 +56,7 @@ namespace GitHubBrowser.Strategies
             var request = GitHubApplication.HttpRequest(reposUrl);
             var repos = JsonConvert.DeserializeObject<Repo[]>(request);
             var repoContainer = new RepoContainer() {Repos = repos};
-            repoContainer.PrintRepoInfo();
+            Console.WriteLine(repoContainer.GetRepoInfos());
         }
     }
 }
