@@ -48,6 +48,8 @@ namespace GitHubBrowser.Strategies
             var request = GitHubApplication.HttpRequest(followersUrl);
             var followers = JsonConvert.DeserializeObject<GitHubUser[]>(request);
             var userContainer = new UserContainer() {Users = followers};
+            if (followers.Length < 1)
+                Console.WriteLine("None");
             Console.WriteLine(userContainer.GetUserInfos());
         }
 
