@@ -19,8 +19,48 @@ namespace GitHubBrowser.Strategies
         public void DealWithProvidedJson(string json)
         {
             var response = JsonConvert.DeserializeObject<GitHubUser>(json);
-            Console.WriteLine("User Info");
+            Console.WriteLine("\n" +
+                              "User Info");
             Console.WriteLine(response.ToString());
+            Console.WriteLine("What Do You Want To Get?");
+            Console.WriteLine("Possible Searches Are repos, followers");
+            
+            var whatToDisplay = Console.ReadLine();
+            if (whatToDisplay.Equals("repos", StringComparison.OrdinalIgnoreCase))
+            {
+                PrintRepos(response.ReposUrl);
+            }
+            
+            if (whatToDisplay.Equals("followers", StringComparison.OrdinalIgnoreCase))
+            {
+                PrintFollowers(response.FollowersUrl);
+            }
+        }
+
+        private void PrintFollowers(string followersUrl)
+        {
+            var request = GitHubApplication.HttpRequest(followersUrl);
+            var followers = JsonConvert.DeserializeObject<GitHubUser[]>(request);
+            Console.WriteLine();
+            foreach (var user in followers)
+            {
+                Console.WriteLine($"Name: {user.Login}");
+                Console.WriteLine($"Url: {user.HtmlUrl}");
+                Console.WriteLine();
+            }
+        }
+
+        private void PrintRepos(string reposUrl)
+        {
+            var request = GitHubApplication.HttpRequest(reposUrl);
+            var repos = JsonConvert.DeserializeObject<Repo[]>(request);
+            Console.WriteLine();
+            foreach (var repo in repos)
+            {
+                Console.WriteLine($"Name: {repo.Name}");
+                Console.WriteLine($"Url: {repo.HtmlUrl}");
+                Console.WriteLine();
+            }
         }
     }
 }

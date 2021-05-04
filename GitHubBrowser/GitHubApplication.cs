@@ -12,10 +12,10 @@ namespace GitHubBrowser
 {
     public class GitHubApplication
     {
-        private readonly Strategies.StrategyContainer strategyContainer;
+        private readonly StrategyContainer strategyContainer;
         private Dictionary<string, IStrategy> ApiStrategies => strategyContainer.strategies;
 
-        public GitHubApplication(Strategies.StrategyContainer strategyContainer)
+        public GitHubApplication(StrategyContainer strategyContainer)
         {
             this.strategyContainer = strategyContainer;
         }
@@ -64,6 +64,28 @@ namespace GitHubBrowser
             
             return null;
         }
+        
+        public static string HttpRequest(string url)
+        {
+            var httpClient = new HttpClient
+            {
+                DefaultRequestHeaders =
+                {
+                    Accept = {new MediaTypeWithQualityHeaderValue("application/vnd.github.v3+json")},
+                    UserAgent = {ProductInfoHeaderValue.Parse("request")}
+                }
+            };
+            var responseText = "";
+            try
+            {
+                responseText = httpClient.GetStringAsync(url).Result;
+            }
+            catch (HttpRequestException e)
+            {
+                return string.Empty;
+            }
+            return responseText;
+        }
 
         private static async Task<string> HttpRequest(IStrategy strategy, string parameter)
         {
@@ -92,7 +114,16 @@ namespace GitHubBrowser
         public static void PrintJsonInfo<T>(string json)
         {
             var response = JsonConvert.DeserializeObject<T>(json);
-            PrintPropertyValues(response);
+            if (response.GetType().IsArray)
+            {
+                var array = response as Array;
+                foreach (var arr in array)
+                {
+                    PrintPropertyValues(arr);
+                }
+            }
+            else
+                PrintPropertyValues(response);
         }
 
         private static void PrintPropertyValues(object gitHubJson)
