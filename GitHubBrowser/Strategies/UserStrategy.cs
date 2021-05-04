@@ -54,13 +54,8 @@ namespace GitHubBrowser.Strategies
         {
             var request = GitHubApplication.HttpRequest(reposUrl);
             var repos = JsonConvert.DeserializeObject<Repo[]>(request);
-            Console.WriteLine();
-            foreach (var repo in repos)
-            {
-                Console.WriteLine($"Name: {repo.Name}");
-                Console.WriteLine($"Url: {repo.HtmlUrl}");
-                Console.WriteLine();
-            }
+            var repoContainer = new RepoContainer() {Repos = repos};
+            repoContainer.PrintRepoInfo();
         }
     }
 }
