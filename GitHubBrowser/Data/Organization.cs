@@ -33,5 +33,22 @@ namespace GitHubBrowser.Data
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
         public string Type { get; set; }
+
+        public override string ToString() => $"{nameof(Login)}: {Login}\n" +
+                                             $"{nameof(Description)}: {Description}\n" +
+                                             $"{nameof(Name)}: {Name}\n" +
+                                             $"{nameof(Company)}: {Company}\n" +
+                                             $"{nameof(Blog)}: {Blog}\n" +
+                                             $"{nameof(Location)}: {Location}\n" +
+                                             $"{nameof(Email)}: {Email}\n" +
+                                             $"{nameof(TwitterUsername)}: {TwitterUsername}\n" +
+                                             $"{nameof(IsVerified)}: {IsVerified}\n" +
+                                             $"{nameof(HasOrganizationProjects)}: {HasOrganizationProjects}\n" +
+                                             $"{nameof(HasRepositoryProjects)}: {HasRepositoryProjects}\n" +
+                                             $"{nameof(PublicRepos)}: {PublicRepos}\n" +
+                                             $"{nameof(Followers)}: {Followers}\n" +
+                                             $"{nameof(Following)}: {Following}\n" +
+                                             $"{nameof(CreatedAt)}: {CreatedAt}\n" +
+                                             $"{nameof(UpdatedAt)}: {UpdatedAt}\n";
     }
 }

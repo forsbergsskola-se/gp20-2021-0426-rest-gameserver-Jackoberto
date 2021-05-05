@@ -7,7 +7,7 @@ namespace GitHubBrowser.Data
 {
     public class RepoContainer : IEnumerable<IRepo>
     {
-        public IRepo[] Repos { get; set; }
+        public IRepo[] Repos { get; init; }
 
         public string GetRepoInfos()
         {
@@ -17,6 +17,7 @@ namespace GitHubBrowser.Data
             {
                 str.AppendLine($"Name: {repo.Name}");
                 str.AppendLine($"Url: {repo.HtmlUrl}");
+                str.AppendLine($"Description: {repo.Description}");
                 str.AppendLine();
             }
 

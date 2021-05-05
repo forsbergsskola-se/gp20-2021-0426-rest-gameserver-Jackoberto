@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using GitHubBrowser.Strategies;
 using Newtonsoft.Json;
@@ -12,12 +9,14 @@ namespace GitHubBrowser
 {
     public class GitHubApplication
     {
+        private IGitHubAPI gitHubApi;
         private readonly StrategyContainer strategyContainer;
         private Dictionary<string, IStrategy> ApiStrategies => strategyContainer.strategies;
 
-        public GitHubApplication(StrategyContainer strategyContainer)
+        public GitHubApplication(StrategyContainer strategyContainer, IGitHubAPI gitHubApi)
         {
             this.strategyContainer = strategyContainer;
+            this.gitHubApi = gitHubApi;
         }
 
         public async Task Start()
@@ -58,59 +57,13 @@ namespace GitHubBrowser
             if (startMethods.TryGetValue(inputAsLower, out var usage))
             {
                 var user = usage.AskForSearchParameters();
-                var response = await HttpRequest(usage, user);
+                var response = await gitHubApi.HttpRequest(usage, user);
                 return new Tuple<string, string>(response, inputAsLower);
             }
             
             return null;
         }
-        
-        public static string HttpRequest(string url)
-        {
-            var httpClient = new HttpClient
-            {
-                DefaultRequestHeaders =
-                {
-                    Accept = {new MediaTypeWithQualityHeaderValue("application/vnd.github.v3+json")},
-                    UserAgent = {ProductInfoHeaderValue.Parse("request")}
-                }
-            };
-            var responseText = "";
-            try
-            {
-                responseText = httpClient.GetStringAsync(url).Result;
-            }
-            catch (HttpRequestException e)
-            {
-                return string.Empty;
-            }
-            return responseText;
-        }
 
-        private static async Task<string> HttpRequest(IStrategy strategy, string parameter)
-        {
-            var httpClient = new HttpClient
-            {
-                DefaultRequestHeaders =
-                {
-                    Accept = {new MediaTypeWithQualityHeaderValue("application/vnd.github.v3+json")},
-                    UserAgent = {ProductInfoHeaderValue.Parse("request")}
-                }
-            };
-            var responseText = "";
-            try
-            {
-                responseText = await httpClient.GetStringAsync($"{strategy.BaseUrl}/{parameter}");
-            }
-            catch (HttpRequestException e)
-            {
-                if (e.StatusCode == HttpStatusCode.NotFound)
-                    Console.WriteLine($"The user {parameter} does not exist");
-                return string.Empty;
-            }
-            return responseText;
-        }
-        
         public static void PrintJsonInfo<T>(string json)
         {
             var response = JsonConvert.DeserializeObject<T>(json);

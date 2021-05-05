@@ -11,11 +11,13 @@ namespace GitHubBrowser.Strategies
             this.strategies = strategies;
         }
 
+        public static readonly IGitHubAPI DefaultGitHubApi = new GitHubAPI();
+
         public static StrategyContainer DefaultStrategyContainer => new StrategyContainer(new Dictionary<string, IStrategy>
         {
-            {"users", new UserStrategy()},
-            {"orgs", new OrgsStrategy()},
-            {"repos", new ReposStrategy()}
+            {"users", new UserStrategy(DefaultGitHubApi)},
+            {"orgs", new OrgsStrategy(DefaultGitHubApi)},
+            {"repos", new ReposStrategy(DefaultGitHubApi)}
         });
     }
 }

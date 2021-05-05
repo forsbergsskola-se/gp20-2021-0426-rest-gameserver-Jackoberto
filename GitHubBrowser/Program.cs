@@ -7,7 +7,7 @@ namespace GitHubBrowser
     {
         private static async Task Main(string[] args)
         {
-            var app = new GitHubApplication(StrategyContainer.DefaultStrategyContainer);
+            var app = new GitHubApplication(StrategyContainer.DefaultStrategyContainer, new GitHubAPI());
             await app.Start();
         }
     }

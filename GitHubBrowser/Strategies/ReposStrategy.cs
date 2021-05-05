@@ -5,6 +5,13 @@ namespace GitHubBrowser.Strategies
 {
     public class ReposStrategy : IStrategy
     {
+        private readonly IGitHubAPI gitHubApi;
+
+        public ReposStrategy(IGitHubAPI gitHubApi)
+        {
+            this.gitHubApi = gitHubApi;
+        }
+
         public string BaseUrl => "https://api.github.com/repos";
         public string AskForSearchParameters()
         {

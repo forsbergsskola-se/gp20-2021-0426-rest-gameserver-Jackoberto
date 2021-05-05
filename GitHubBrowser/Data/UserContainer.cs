@@ -7,7 +7,7 @@ namespace GitHubBrowser.Data
 {
     public class UserContainer : IEnumerable<IGitHubUser>
     {
-        public IGitHubUser[] Users { get; set; }
+        public IGitHubUser[] Users { get; init; }
 
         public string GetUserInfos()
         {
