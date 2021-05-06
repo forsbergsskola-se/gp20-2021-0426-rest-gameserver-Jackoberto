@@ -17,7 +17,7 @@ namespace LameScooter.RentalServices
                 throw new ArgumentException($"{stationName} Contains Numbers This Is Not Allowed");
             var data = await RequestData();
             var stationContainer = JsonConvert.DeserializeObject<StationContainer>(data);
-            var station = stationContainer.Stations.FirstOrDefault(station => station.Name.Replace(" ", "") == stationName);
+            var station = stationContainer.Stations.FirstOrDefault(station => station.Name == stationName);
             if (station == null)
                 throw new NotFoundException(stationName);
             return station.BikesAvailable;

@@ -16,7 +16,7 @@ namespace LameScooter.RentalServices
                 throw new ArgumentException($"{stationName} Contains Numbers This Is Not Allowed");
             var text = await File.ReadAllTextAsync(FilePath);
             var stations = GetStations(text);
-            var station = stations.FirstOrDefault(station => station.Name.Replace(" ", "") == stationName);
+            var station = stations.FirstOrDefault(station => station.Name == stationName);
             if (station == null)
                 throw new NotFoundException(stationName);
             return station.BikesAvailable;
