@@ -17,20 +17,23 @@ namespace LameScooter.RentalServices
             var collection = database.GetCollection<BsonDocument>("stations");
             var fieldDef = new StringFieldDefinition<BsonDocument, string>("name");
             var filter = Builders<BsonDocument>.Filter.Eq(fieldDef, stationName);
-            var objects= collection.Find(filter);
-            var cursor = await objects.ToCursorAsync();
+            var objects = await collection.Find(filter).ToListAsync();
 
-            while (await cursor.MoveNextAsync())
+            foreach (var s in objects)
             {
-                foreach (var s in cursor.Current)
+                foreach (var bsonElement in s.Elements)
                 {
-                    foreach (var bsonElement in s.Elements)
-                    {
-                        if (bsonElement.Name == "bikesAvailable")
-                            return (int)bsonElement.Value.AsDouble;
-                    }
+                    if (bsonElement.Name == "bikesAvailable")
+                        return bsonElement.Value.AsInt32;
                 }
+                // var bsonValue = s.AsBsonValue;
+                // var json = bsonValue.ToJson();
+                // var indexOf = json.IndexOf(',');
+                // json = json.Remove(1, indexOf);
+                // var obj = JsonConvert.DeserializeObject<Station>(json);
+                // return obj.BikesAvailable;
             }
+            
             throw new NotFoundException(stationName);
         }
     }
