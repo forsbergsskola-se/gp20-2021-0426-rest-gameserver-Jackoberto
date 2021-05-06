@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace LameScooter
+namespace LameScooter.RentalServices
 {
     public interface IRental
     {
