@@ -21,17 +21,10 @@ namespace LameScooter.RentalServices
 
             foreach (var s in objects)
             {
-                foreach (var bsonElement in s.Elements)
+                if (s.TryGetValue("bikesAvailable", out var value))
                 {
-                    if (bsonElement.Name == "bikesAvailable")
-                        return bsonElement.Value.AsInt32;
+                    return value.AsInt32;
                 }
-                // var bsonValue = s.AsBsonValue;
-                // var json = bsonValue.ToJson();
-                // var indexOf = json.IndexOf(',');
-                // json = json.Remove(1, indexOf);
-                // var obj = JsonConvert.DeserializeObject<Station>(json);
-                // return obj.BikesAvailable;
             }
             
             throw new NotFoundException(stationName);
