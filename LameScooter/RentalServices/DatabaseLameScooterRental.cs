@@ -19,9 +19,9 @@ namespace LameScooter.RentalServices
             var filter = Builders<BsonDocument>.Filter.Eq(fieldDef, stationName);
             var objects = await collection.Find(filter).ToListAsync();
 
-            foreach (var s in objects)
+            foreach (var bson in objects)
             {
-                if (s.TryGetValue("bikesAvailable", out var value))
+                if (bson.TryGetValue("bikesAvailable", out var value))
                 {
                     return value.AsInt32;
                 }
