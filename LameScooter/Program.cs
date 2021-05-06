@@ -17,8 +17,21 @@ namespace LameScooter
                 }
             };
             IRental rental = new OfflineLameScooterRental();
-            var amount = await rental.GetScooterCountInStation(args[0]);
-            Console.WriteLine($"The Number Of Available Bikes At Station {args[0]} is {amount}");
+            try
+            {
+                var amount = await rental.GetScooterCountInStation(args[0]);
+                Console.WriteLine($"The Number Of Available Bikes At Station {args[0]} is {amount}");
+            }
+            catch (ArgumentException e)
+            {
+                Console.WriteLine($"Invalid Argument: {e.Message}");
+                throw;
+            }
+            catch (NotFoundException e)
+            {
+                Console.WriteLine($"Could not find: {e.Message}");
+                throw;
+            }
         }
     }
 }
