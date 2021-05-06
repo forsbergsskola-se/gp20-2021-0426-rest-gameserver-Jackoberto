@@ -22,6 +22,7 @@ namespace LameScooter
                 "offline" => new OfflineLameScooterRental(),
                 "deprecated" => new DeprecatedLameScooterRental(),
                 "realtime" => new RealTimeLameScooterRental(),
+                "database" => new DatabaseLameScooterRental(),
                 _ => throw new ArgumentException($"{args[1]} is not a valid argument")
             };
             try
