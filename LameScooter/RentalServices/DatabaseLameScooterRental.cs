@@ -17,17 +17,17 @@ namespace LameScooter.RentalServices
             var collection = database.GetCollection<BsonDocument>("stations");
             var fieldDef = new StringFieldDefinition<BsonDocument, string>("name");
             var filter = Builders<BsonDocument>.Filter.Eq(fieldDef, stationName);
-            var objects = await collection.Find(filter).ToListAsync();
-
-            foreach (var bson in objects)
-            {
-                if (bson.TryGetValue("bikesAvailable", out var value))
-                {
-                    return value.AsInt32;
-                }
-            }
+            var bson = await collection.Find(filter).FirstOrDefaultAsync();
+            if (bson == default)
+                throw new NotFoundException(stationName);
             
-            throw new NotFoundException(stationName);
+            if (bson.TryGetValue("bikesAvailable", out var value))
+            {
+                return value.AsInt32;
+            }
+
+
+            throw new Exception("Field Named BikesAvailable Doesn't Exist");
         }
     }
 }
