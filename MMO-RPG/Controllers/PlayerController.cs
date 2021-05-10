@@ -15,9 +15,9 @@ namespace MMO_RPG.Controllers
     {
         private readonly IRepository repository;
         
-        public PlayerController()
+        public PlayerController(IRepository repository)
         {
-            repository = new FileRepository();
+            this.repository = repository;
         }
         
         [HttpPost("New")]
