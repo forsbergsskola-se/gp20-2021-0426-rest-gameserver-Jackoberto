@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,19 +18,18 @@ namespace MMO_RPG
             return players.FirstOrDefault(player => player.Id == id);
         }
 
-        public async Task<Player[]> GetAll()
+        public async Task<List<Player>> GetAll()
         {
             var text = await File.ReadAllTextAsync(StoragePath);
-            return JsonConvert.DeserializeObject<Player[]>(text);
+            return JsonConvert.DeserializeObject<List<Player>>(text);
         }
 
-        public async Task<Player> Create(NewPlayer player)
+        public async Task<Player> Create(NewPlayer newPlayer)
         {
             var players = await GetAll();
             var list = players.ToList();
-            var addedPlayer = new Player(player);
+            var addedPlayer = Player.CreatePlayer(newPlayer);
             list.Add(addedPlayer);
-            players = list.ToArray();
             var json = JsonConvert.SerializeObject(players);
             await File.WriteAllTextAsync(StoragePath, json);
             return addedPlayer;
@@ -50,6 +50,29 @@ namespace MMO_RPG
 
             return null;
         }
+        
+        public async Task<Player> AddItem(Guid id, Item item)
+        {
+            var players = await GetAll();
+            foreach (var p in players)
+            {
+                if (p.Id != id)
+                    continue;
+                p.Inventory ??= new PlayerInventory();
+                p.Inventory.AddItem(item);
+                var json = JsonConvert.SerializeObject(players);
+                await File.WriteAllTextAsync(StoragePath, json);
+                return p;
+            }
+
+            return null;
+        }
+
+        public async Task<PlayerInventory> GetAllItems(Guid id)
+        {
+            var player = await Get(id);
+            return player.Inventory;
+        }
 
         public async Task<Player> Delete(Guid id)
         {
@@ -62,6 +85,39 @@ namespace MMO_RPG
                 var json = JsonConvert.SerializeObject(players);
                 await File.WriteAllTextAsync(StoragePath, json);
                 return p;
+            }
+
+            return null;
+        }
+
+        public async Task DeleteItem(Guid id, Item item)
+        {
+            var players = await GetAll();
+            foreach (var p in players)
+            {
+                if (p.Id != id)
+                    continue;
+                p.Inventory.Items.Remove(item);
+                var json = JsonConvert.SerializeObject(players);
+                await File.WriteAllTextAsync(StoragePath, json);
+                return;
+            }
+        }
+
+        public async Task<PlayerInventory> ModifyItem(Guid id, string originalItem, ModifiedItem item)
+        {
+            var players = await GetAll();
+            foreach (var p in players)
+            {
+                if (p.Id != id)
+                    continue;
+                var foundItem = p.Inventory.Items.Find(item1 => item1.Name.Equals(originalItem));
+                if (foundItem == null)
+                    return p.Inventory;
+                foundItem.Name = item.Name;
+                var json = JsonConvert.SerializeObject(players);
+                await File.WriteAllTextAsync(StoragePath, json);
+                return p.Inventory;
             }
 
             return null;

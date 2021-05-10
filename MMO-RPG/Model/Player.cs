@@ -4,15 +4,15 @@ namespace MMO_RPG.Model
 {
     public class Player
     {
-        public Player()
+        public static Player CreatePlayer(NewPlayer newPlayer)
         {
-            
-        }
-        public Player(NewPlayer newPlayer)
-        {
-            Id = Guid.NewGuid();
-            Name = newPlayer.Name;
-            CreationTime = DateTime.UtcNow;
+            var player = new Player
+            {
+                Id = Guid.NewGuid(),
+                Name = newPlayer.Name,
+                CreationTime = DateTime.UtcNow
+            };
+            return player;
         }
         public Guid Id { get; set; }
         public string Name { get; set; }
@@ -20,5 +20,6 @@ namespace MMO_RPG.Model
         public int Level { get; set; }
         public bool IsDeleted { get; set; }
         public DateTime CreationTime { get; set; }
+        public PlayerInventory Inventory { get; set; }
     }
 }

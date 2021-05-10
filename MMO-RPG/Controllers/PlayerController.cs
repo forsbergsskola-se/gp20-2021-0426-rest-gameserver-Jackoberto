@@ -10,16 +10,14 @@ using Newtonsoft.Json;
 namespace MMO_RPG.Controllers
 {
     [ApiController]
-    [Route("[controller]/Player")]
+    [Route("[controller]/players")]
     public class PlayerController : ControllerBase
     {
-        private readonly ILogger<PlayerController> _logger;
         private readonly IRepository repository;
         
-        public PlayerController(ILogger<PlayerController> logger)
+        public PlayerController()
         {
             repository = new FileRepository();
-            _logger = logger;
         }
         
         [HttpPost("New")]
