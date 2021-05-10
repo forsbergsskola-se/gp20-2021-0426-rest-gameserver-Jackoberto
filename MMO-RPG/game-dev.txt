@@ -1,0 +1,1 @@
+[{"Id":"3fa85f64-5717-4562-b3fc-2c963f66afa6","Name":"player1","Score":0,"Level":0,"IsDeleted":true,"CreationTime":"2021-05-10T10:56:29.219Z"},{"Id":"5fa85f64-5717-4562-b3fc-2c963f66afa6","Name":"player2","Score":0,"Level":0,"IsDeleted":true,"CreationTime":"2021-05-10T10:57:07.647Z"}]

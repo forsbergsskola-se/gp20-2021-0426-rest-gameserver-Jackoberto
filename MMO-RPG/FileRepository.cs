@@ -9,7 +9,7 @@ namespace MMO_RPG
 {
     public class FileRepository : IRepository
     {
-        private string StoragePath => "game-dev.txt";
+        private string StoragePath => @"game-dev.txt";
 
         public async Task<Player> Get(Guid id)
         {
@@ -58,10 +58,7 @@ namespace MMO_RPG
                 if (p.Id != id)
                     continue;
                 p.IsDeleted = true;
-                var list = players.ToList();
-                list.Remove(p);
-                var modifiedList = list.ToArray();
-                var json = JsonConvert.SerializeObject(modifiedList);
+                var json = JsonConvert.SerializeObject(players);
                 await File.WriteAllTextAsync(StoragePath, json);
                 return p;
             }
