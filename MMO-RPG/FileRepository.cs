@@ -23,15 +23,16 @@ namespace MMO_RPG
             return JsonConvert.DeserializeObject<Player[]>(text);
         }
 
-        public async Task<Player> Create(Player player)
+        public async Task<Player> Create(NewPlayer player)
         {
             var players = await GetAll();
             var list = players.ToList();
-            list.Add(player);
+            var addedPlayer = new Player(player);
+            list.Add(addedPlayer);
             players = list.ToArray();
             var json = JsonConvert.SerializeObject(players);
             await File.WriteAllTextAsync(StoragePath, json);
-            return player;
+            return addedPlayer;
         }
 
         public async Task<Player> Modify(Guid id, ModifiedPlayer modifiedPlayer)

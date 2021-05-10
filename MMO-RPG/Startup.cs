@@ -22,7 +22,7 @@ namespace MMO_RPG
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "MMO_RPG_Pre", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "MMO_RPG", Version = "v1" });
             });
         }
 

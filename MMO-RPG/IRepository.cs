@@ -8,7 +8,7 @@ namespace MMO_RPG
     {
         Task<Player> Get(Guid id);
         Task<Player[]> GetAll();
-        Task<Player> Create(Player player);
+        Task<Player> Create(NewPlayer player);
         Task<Player> Modify(Guid id, ModifiedPlayer modifiedPlayer);
         Task<Player> Delete(Guid id);
     }
