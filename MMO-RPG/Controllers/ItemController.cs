@@ -42,7 +42,7 @@ namespace MMO_RPG.Controllers
         }
 
         [HttpDelete("Delete")]
-        public async Task Delete(Guid playerId, Item item)
+        public async Task Delete(Guid playerId, string item)
         {
             await repository.DeleteItem(playerId, item);
         }

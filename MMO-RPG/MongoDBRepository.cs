@@ -86,7 +86,7 @@ namespace MMO_RPG
             return result;
         }
 
-        public async Task DeleteItem(Guid id, Item item)
+        public async Task DeleteItem(Guid id, string itemToDelete)
         {
             throw new NotImplementedException();
             // var collection = Database.GetCollection<Player>("players");

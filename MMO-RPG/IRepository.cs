@@ -14,7 +14,7 @@ namespace MMO_RPG
         Task<Player> AddItem(Guid id, Item item);
         Task<PlayerInventory> GetAllItems(Guid id);
         Task<Player> Delete(Guid id);
-        Task DeleteItem(Guid id, Item item);
+        Task DeleteItem(Guid id, string itemToDelete);
         Task<PlayerInventory> ModifyItem(Guid id, string originalItem, ModifiedItem item);
     }
 }

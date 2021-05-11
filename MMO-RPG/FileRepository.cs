@@ -90,14 +90,14 @@ namespace MMO_RPG
             return null;
         }
 
-        public async Task DeleteItem(Guid id, Item item)
+        public async Task DeleteItem(Guid id, string itemToDelete)
         {
             var players = await GetAll();
             foreach (var p in players)
             {
                 if (p.Id != id)
                     continue;
-                p.Inventory.Items.Remove(item);
+                p.Inventory.Items.Remove(new Item{Name = itemToDelete});
                 var json = JsonConvert.SerializeObject(players);
                 await File.WriteAllTextAsync(StoragePath, json);
                 return;
