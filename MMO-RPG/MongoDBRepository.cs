@@ -54,11 +54,11 @@ namespace MMO_RPG
         public async Task<Player> Modify(Guid id, ModifiedPlayer modifiedPlayer)
         {
             throw new NotImplementedException();
-            var collection = Database.GetCollection<Player>("players");
-            var fieldDef = new StringFieldDefinition<Player, Guid>(nameof(Player.Id));
-            var filter = Builders<Player>.Filter.Eq(fieldDef, id);
-            var update = new BsonDocument("$inc", new BsonDocument( {{"Score", modifiedPlayer.Score}});
-            var result = await collection.UpdateOneAsync(filter, update);
+            // var collection = Database.GetCollection<Player>("players");
+            // var fieldDef = new StringFieldDefinition<Player, Guid>(nameof(Player.Id));
+            // var filter = Builders<Player>.Filter.Eq(fieldDef, id);
+            // var update = new BsonDocument("$inc", new BsonDocument( {{"Score", modifiedPlayer.Score}});
+            // var result = await collection.UpdateOneAsync(filter, update);
         }
         
         public async Task<Player> AddItem(Guid id, Item item)
