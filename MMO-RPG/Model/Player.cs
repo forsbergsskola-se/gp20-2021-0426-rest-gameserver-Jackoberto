@@ -20,6 +20,6 @@ namespace MMO_RPG.Model
         public int Level { get; set; }
         public bool IsDeleted { get; set; }
         public DateTime CreationTime { get; set; }
-        public PlayerInventory Inventory { get; set; }
+        public PlayerInventory Inventory { get; set; } = new ();
     }
 }

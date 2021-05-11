@@ -29,11 +29,10 @@ namespace MMO_RPG
             var collection = Database.GetCollection<Player>("players");
             var fieldDef = new StringFieldDefinition<Player, Guid>(nameof(Player.Id));
             var filter = Builders<Player>.Filter.Eq(fieldDef, id);
-            var data = await collection.Find(filter).ToListAsync();
-            var document = data.FirstOrDefault();
-            if (document is null)
+            var data = await collection.Find(filter).SingleOrDefaultAsync();
+            if (data is null)
                 throw new Exception($"No Player Was Found With This GUID {id}");
-            return document;
+            return data;
         }
 
         public async Task<List<Player>> GetAll()
@@ -53,32 +52,49 @@ namespace MMO_RPG
 
         public async Task<Player> Modify(Guid id, ModifiedPlayer modifiedPlayer)
         {
-            throw new NotImplementedException();
-            // var collection = Database.GetCollection<Player>("players");
-            // var fieldDef = new StringFieldDefinition<Player, Guid>(nameof(Player.Id));
-            // var filter = Builders<Player>.Filter.Eq(fieldDef, id);
-            // var update = new BsonDocument("$inc", new BsonDocument( {{"Score", modifiedPlayer.Score}});
-            // var result = await collection.UpdateOneAsync(filter, update);
+            var collection = Database.GetCollection<Player>("players");
+            var fieldDef = new StringFieldDefinition<Player, Guid>(nameof(Player.Id));
+            var filter = Builders<Player>.Filter.Eq(fieldDef, id);
+            var update = Builders<Player>.Update.Set(nameof(Player.Score), modifiedPlayer.Score);
+            var result = await collection.FindOneAndUpdateAsync(filter, update, new FindOneAndUpdateOptions<Player>{ ReturnDocument = ReturnDocument.After });
+            return result;
         }
         
         public async Task<Player> AddItem(Guid id, Item item)
         {
-            throw new NotImplementedException();
+            var collection = Database.GetCollection<Player>("players");
+            var fieldDef = new StringFieldDefinition<Player, Guid>(nameof(Player.Id));
+            var filter = Builders<Player>.Filter.Eq(fieldDef, id);
+            var update = Builders<Player>.Update.Push($"{nameof(Player.Inventory)}.{nameof(PlayerInventory.Items)}", item);
+            var result = await collection.FindOneAndUpdateAsync(filter, update, new FindOneAndUpdateOptions<Player>{ ReturnDocument = ReturnDocument.After, IsUpsert = true});
+            return result;
         }
 
         public async Task<PlayerInventory> GetAllItems(Guid id)
         {
-            throw new NotImplementedException();
+            var player = await Get(id);
+            return player.Inventory;
         }
 
         public async Task<Player> Delete(Guid id)
         {
-            throw new NotImplementedException();
+            var collection = Database.GetCollection<Player>("players");
+            var fieldDef = new StringFieldDefinition<Player, Guid>(nameof(Player.Id));
+            var filter = Builders<Player>.Filter.Eq(fieldDef, id);
+            var update = Builders<Player>.Update.Set(nameof(Player.IsDeleted), true);
+            var result = await collection.FindOneAndUpdateAsync(filter, update, new FindOneAndUpdateOptions<Player>{ ReturnDocument = ReturnDocument.After });
+            return result;
         }
 
         public async Task DeleteItem(Guid id, Item item)
         {
             throw new NotImplementedException();
+            // var collection = Database.GetCollection<Player>("players");
+            // var fieldDef = new StringFieldDefinition<Player, Guid>(nameof(Player.Id));
+            // var filter = Builders<Player>.Filter.Eq(fieldDef, id);
+            // //var update = Builders<Player>.Update.($"{nameof(Player.Inventory)}.{nameof(PlayerInventory.Items)}", item);
+            // var result = await collection.FindOneAndUpdateAsync(filter, update, new FindOneAndUpdateOptions<Player>{ ReturnDocument = ReturnDocument.After, IsUpsert = true});
+            // return result;
         }
 
         public async Task<PlayerInventory> ModifyItem(Guid id, string originalItem, ModifiedItem item)

@@ -15,5 +15,7 @@
         public override int GetHashCode() => (Name != null ? Name.GetHashCode() : 0);
 
         public string Name { get; set; }
+        
+        public bool IsDeleted { get; set; }
     }
 }
