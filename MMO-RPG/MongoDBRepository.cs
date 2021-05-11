@@ -26,119 +26,64 @@ namespace MMO_RPG
 
         public async Task<Player> Get(Guid id)
         {
-            var players = await GetAll();
-            return players.FirstOrDefault(player => player.Id == id);
+            var collection = Database.GetCollection<Player>("players");
+            var fieldDef = new StringFieldDefinition<Player, Guid>(nameof(Player.Id));
+            var filter = Builders<Player>.Filter.Eq(fieldDef, id);
+            var data = await collection.Find(filter).ToListAsync();
+            var document = data.FirstOrDefault();
+            if (document is null)
+                throw new Exception($"No Player Was Found With This GUID {id}");
+            return document;
         }
 
         public async Task<List<Player>> GetAll()
         {
-            var text = Database.GetCollection<BsonDocument>("players");
-            var data = await text.Find(FilterDefinition<BsonDocument>.Empty).ToListAsync();
-            return await Task.Run(() => InternalGetAll(data));
-        }
-
-        private List<Player> InternalGetAll(List<BsonDocument> bsonDocuments)
-        {
-            return bsonDocuments.Select(bsonDocument => BsonSerializer.Deserialize<Player>(bsonDocument)).ToList();
+            var collection = Database.GetCollection<Player>("players");
+            var getDataTask = collection.Find(FilterDefinition<Player>.Empty).ToListAsync();
+            return await getDataTask;
         }
 
         public async Task<Player> Create(NewPlayer newPlayer)
         {
-            var players = await GetAll();
-            var list = players.ToList();
-            var addedPlayer = Player.CreatePlayer(newPlayer);
-            list.Add(addedPlayer);
-            var json = JsonConvert.SerializeObject(players);
-            await File.WriteAllTextAsync(StoragePath, json);
-            return addedPlayer;
+            var collection = Database.GetCollection<Player>("players");
+            var player = Player.CreatePlayer(newPlayer);
+            await collection.InsertOneAsync(player);
+            return player;
         }
 
         public async Task<Player> Modify(Guid id, ModifiedPlayer modifiedPlayer)
         {
-            var players = await GetAll();
-            foreach (var p in players)
-            {
-                if (p.Id != id)
-                    continue;
-                p.Score = modifiedPlayer.Score;
-                var json = JsonConvert.SerializeObject(players);
-                await File.WriteAllTextAsync(StoragePath, json);
-                return p;
-            }
-
-            return null;
+            throw new NotImplementedException();
+            var collection = Database.GetCollection<Player>("players");
+            var fieldDef = new StringFieldDefinition<Player, Guid>(nameof(Player.Id));
+            var filter = Builders<Player>.Filter.Eq(fieldDef, id);
+            var update = new BsonDocument("$inc", new BsonDocument( {{"Score", modifiedPlayer.Score}});
+            var result = await collection.UpdateOneAsync(filter, update);
         }
         
         public async Task<Player> AddItem(Guid id, Item item)
         {
-            var players = await GetAll();
-            foreach (var p in players)
-            {
-                if (p.Id != id)
-                    continue;
-                p.Inventory ??= new PlayerInventory();
-                p.Inventory.AddItem(item);
-                var json = JsonConvert.SerializeObject(players);
-                await File.WriteAllTextAsync(StoragePath, json);
-                return p;
-            }
-
-            return null;
+            throw new NotImplementedException();
         }
 
         public async Task<PlayerInventory> GetAllItems(Guid id)
         {
-            var player = await Get(id);
-            return player.Inventory;
+            throw new NotImplementedException();
         }
 
         public async Task<Player> Delete(Guid id)
         {
-            var players = await GetAll();
-            foreach (var p in players)
-            {
-                if (p.Id != id)
-                    continue;
-                p.IsDeleted = true;
-                var json = JsonConvert.SerializeObject(players);
-                await File.WriteAllTextAsync(StoragePath, json);
-                return p;
-            }
-
-            return null;
+            throw new NotImplementedException();
         }
 
         public async Task DeleteItem(Guid id, Item item)
         {
-            var players = await GetAll();
-            foreach (var p in players)
-            {
-                if (p.Id != id)
-                    continue;
-                p.Inventory.Items.Remove(item);
-                var json = JsonConvert.SerializeObject(players);
-                await File.WriteAllTextAsync(StoragePath, json);
-                return;
-            }
+            throw new NotImplementedException();
         }
 
         public async Task<PlayerInventory> ModifyItem(Guid id, string originalItem, ModifiedItem item)
         {
-            var players = await GetAll();
-            foreach (var p in players)
-            {
-                if (p.Id != id)
-                    continue;
-                var foundItem = p.Inventory.Items.Find(item1 => item1.Name.Equals(originalItem));
-                if (foundItem == null)
-                    return p.Inventory;
-                foundItem.Name = item.Name;
-                var json = JsonConvert.SerializeObject(players);
-                await File.WriteAllTextAsync(StoragePath, json);
-                return p.Inventory;
-            }
-
-            return null;
+            throw new NotImplementedException();
         }
     }
 }
