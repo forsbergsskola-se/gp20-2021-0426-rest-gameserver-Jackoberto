@@ -28,10 +28,10 @@ namespace MMO_RPG.Controllers
         }
         
         [HttpGet("GetAll")]
-        public async Task<PlayerInventory> GetAll(Guid playerId)
+        public async Task<List<Item>> GetAll(Guid playerId)
         {
             var items = await repository.GetAllItems(playerId);
-            return items;
+            return items.Items.Where(item => !item.IsDeleted).ToList();
         }
 
         [HttpPost("Modify")]

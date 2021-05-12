@@ -38,7 +38,7 @@ namespace MMO_RPG
         public async Task<List<Player>> GetAll()
         {
             var collection = Database.GetCollection<Player>("players");
-            var getDataTask = collection.Find(FilterDefinition<Player>.Empty).ToListAsync();
+            var getDataTask = collection.Find(Builders<Player>.Filter.Eq("IsDeleted", false)).ToListAsync();
             return await getDataTask;
         }
 
