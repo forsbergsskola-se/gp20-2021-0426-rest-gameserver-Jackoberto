@@ -11,10 +11,10 @@ namespace MMO_RPG
         Task<List<Player>> GetAll();
         Task<Player> Create(NewPlayer newPlayer);
         Task<Player> Modify(Guid id, ModifiedPlayer modifiedPlayer);
-        Task<Player> AddItem(Guid id, Item item);
+        Task<Player> AddItem(Guid id, NewItem item);
         Task<PlayerInventory> GetAllItems(Guid id);
         Task<Player> Delete(Guid id);
-        Task DeleteItem(Guid id, string itemToDelete);
-        Task<PlayerInventory> ModifyItem(Guid id, string originalItem, ModifiedItem item);
+        Task DeleteItem(Guid id, Guid itemToDelete);
+        Task<PlayerInventory> ModifyItem(Guid id, Guid originalItem, ModifiedItem item);
     }
 }

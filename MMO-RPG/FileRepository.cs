@@ -51,7 +51,7 @@ namespace MMO_RPG
             return null;
         }
         
-        public async Task<Player> AddItem(Guid id, Item item)
+        public async Task<Player> AddItem(Guid id, NewItem item)
         {
             var players = await GetAll();
             foreach (var p in players)
@@ -59,7 +59,7 @@ namespace MMO_RPG
                 if (p.Id != id)
                     continue;
                 p.Inventory ??= new PlayerInventory();
-                p.Inventory.AddItem(item);
+                p.Inventory.AddItem(Item.CreateItem(item));
                 var json = JsonConvert.SerializeObject(players);
                 await File.WriteAllTextAsync(StoragePath, json);
                 return p;
@@ -90,28 +90,28 @@ namespace MMO_RPG
             return null;
         }
 
-        public async Task DeleteItem(Guid id, string itemToDelete)
+        public async Task DeleteItem(Guid id, Guid itemToDelete)
         {
             var players = await GetAll();
             foreach (var p in players)
             {
                 if (p.Id != id)
                     continue;
-                p.Inventory.Items.Remove(new Item{Name = itemToDelete});
+                p.Inventory.Items.RemoveAll(item => item.Id == itemToDelete);
                 var json = JsonConvert.SerializeObject(players);
                 await File.WriteAllTextAsync(StoragePath, json);
                 return;
             }
         }
 
-        public async Task<PlayerInventory> ModifyItem(Guid id, string originalItem, ModifiedItem item)
+        public async Task<PlayerInventory> ModifyItem(Guid id, Guid originalItem, ModifiedItem item)
         {
             var players = await GetAll();
             foreach (var p in players)
             {
                 if (p.Id != id)
                     continue;
-                var foundItem = p.Inventory.Items.Find(item1 => item1.Name.Equals(originalItem));
+                var foundItem = p.Inventory.Items.Find(item1 => item1.Id.Equals(originalItem));
                 if (foundItem == null)
                     return p.Inventory;
                 foundItem.Name = item.Name;

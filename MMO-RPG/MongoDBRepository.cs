@@ -60,12 +60,12 @@ namespace MMO_RPG
             return result;
         }
         
-        public async Task<Player> AddItem(Guid id, Item item)
+        public async Task<Player> AddItem(Guid id, NewItem item)
         {
             var collection = Database.GetCollection<Player>("players");
             var fieldDef = new StringFieldDefinition<Player, Guid>(nameof(Player.Id));
             var filter = Builders<Player>.Filter.Eq(fieldDef, id);
-            var update = Builders<Player>.Update.Push($"{nameof(Player.Inventory)}.{nameof(PlayerInventory.Items)}", item);
+            var update = Builders<Player>.Update.Push($"{nameof(Player.Inventory)}.{nameof(PlayerInventory.Items)}", Item.CreateItem(item));
             var result = await collection.FindOneAndUpdateAsync(filter, update, new FindOneAndUpdateOptions<Player>{ ReturnDocument = ReturnDocument.After, IsUpsert = true});
             return result;
         }
@@ -86,7 +86,7 @@ namespace MMO_RPG
             return result;
         }
 
-        public async Task DeleteItem(Guid id, string itemToDelete)
+        public async Task DeleteItem(Guid id, Guid itemToDelete)
         {
             throw new NotImplementedException();
             // var collection = Database.GetCollection<Player>("players");
@@ -97,7 +97,7 @@ namespace MMO_RPG
             // return result;
         }
 
-        public async Task<PlayerInventory> ModifyItem(Guid id, string originalItem, ModifiedItem item)
+        public async Task<PlayerInventory> ModifyItem(Guid id, Guid originalItem, ModifiedItem item)
         {
             throw new NotImplementedException();
         }

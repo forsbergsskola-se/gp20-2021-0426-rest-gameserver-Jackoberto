@@ -21,7 +21,7 @@ namespace MMO_RPG.Controllers
         }
         
         [HttpPost("New")]
-        public async Task<Player> NewItem(Guid playerId, Item item)
+        public async Task<Player> NewItem(Guid playerId, NewItem item)
         {
             var player = await repository.AddItem(playerId, item);
             return player;
@@ -35,14 +35,14 @@ namespace MMO_RPG.Controllers
         }
 
         [HttpPost("Modify")]
-        public async Task<PlayerInventory> Modify(Guid playerId, string originalItem, ModifiedItem item)
+        public async Task<PlayerInventory> Modify(Guid playerId, Guid originalItem, ModifiedItem item)
         {
             var items = await repository.ModifyItem(playerId, originalItem, item);
             return items;
         }
 
         [HttpDelete("Delete")]
-        public async Task Delete(Guid playerId, string item)
+        public async Task Delete(Guid playerId, Guid item)
         {
             await repository.DeleteItem(playerId, item);
         }

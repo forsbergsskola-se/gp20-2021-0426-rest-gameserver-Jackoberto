@@ -1,4 +1,6 @@
-﻿namespace MMO_RPG.Model
+﻿using System;
+
+namespace MMO_RPG.Model
 {
     public class Item
     {
@@ -14,8 +16,23 @@
 
         public override int GetHashCode() => (Name != null ? Name.GetHashCode() : 0);
 
+        public static Item CreateItem(NewItem newItem)
+        {
+            var item = new Item
+            {
+                Name = newItem.Name,
+                Id = Guid.NewGuid(),
+                CreationTime = DateTime.Now
+            };
+            return item;
+        }
+        
+        public Guid Id { get; set; }
+
         public string Name { get; set; }
         
         public bool IsDeleted { get; set; }
+        
+        public DateTime CreationTime { get; set; }
     }
 }
