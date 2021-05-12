@@ -88,18 +88,23 @@ namespace MMO_RPG
 
         public async Task DeleteItem(Guid id, Guid itemToDelete)
         {
-            throw new NotImplementedException();
-            // var collection = Database.GetCollection<Player>("players");
-            // var fieldDef = new StringFieldDefinition<Player, Guid>(nameof(Player.Id));
-            // var filter = Builders<Player>.Filter.Eq(fieldDef, id);
-            // //var update = Builders<Player>.Update.($"{nameof(Player.Inventory)}.{nameof(PlayerInventory.Items)}", item);
-            // var result = await collection.FindOneAndUpdateAsync(filter, update, new FindOneAndUpdateOptions<Player>{ ReturnDocument = ReturnDocument.After, IsUpsert = true});
-            // return result;
+            var collection = Database.GetCollection<Player>("players");
+            var fieldDef = new StringFieldDefinition<Player, Guid>(nameof(Player.Id));
+            var elem = Builders<Player>.Filter.And(Builders<Player>.Filter.Eq(fieldDef, id), 
+                Builders<Player>.Filter.ElemMatch(x => x.Inventory.Items, x => x.Id == itemToDelete));
+            var update = Builders<Player>.Update.Set("Inventory.Items.$.IsDeleted", true);
+            await collection.FindOneAndUpdateAsync(elem, update);
         }
 
         public async Task<PlayerInventory> ModifyItem(Guid id, Guid originalItem, ModifiedItem item)
         {
-            throw new NotImplementedException();
+            var collection = Database.GetCollection<Player>("players");
+            var fieldDef = new StringFieldDefinition<Player, Guid>(nameof(Player.Id));
+            var elem = Builders<Player>.Filter.And(Builders<Player>.Filter.Eq(fieldDef, id), 
+                Builders<Player>.Filter.ElemMatch(x => x.Inventory.Items, x => x.Id == originalItem));
+            var update = Builders<Player>.Update.Set("Inventory.Items.$.Name", item.Name);
+            var response = await collection.FindOneAndUpdateAsync(elem, update, new FindOneAndUpdateOptions<Player>{ ReturnDocument = ReturnDocument.After });
+            return response.Inventory;
         }
     }
 }

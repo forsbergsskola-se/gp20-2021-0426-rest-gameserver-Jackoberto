@@ -35,10 +35,10 @@ namespace MMO_RPG.Controllers
         }
 
         [HttpPost("Modify")]
-        public async Task<PlayerInventory> Modify(Guid playerId, Guid originalItem, ModifiedItem item)
+        public async Task<List<Item>> Modify(Guid playerId, Guid originalItem, ModifiedItem modifiedItem)
         {
-            var items = await repository.ModifyItem(playerId, originalItem, item);
-            return items;
+            var items = await repository.ModifyItem(playerId, originalItem, modifiedItem);
+            return items.Items.Where(item => !item.IsDeleted).ToList();
         }
 
         [HttpDelete("Delete")]
