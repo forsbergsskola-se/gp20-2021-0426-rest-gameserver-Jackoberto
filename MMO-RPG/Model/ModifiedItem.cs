@@ -1,4 +1,4 @@
-﻿namespace MMO_RPG
+﻿namespace MMO_RPG.Model
 {
     public class ModifiedItem
     {

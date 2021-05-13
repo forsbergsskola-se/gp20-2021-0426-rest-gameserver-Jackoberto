@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace MMO_RPG.Model
 {
@@ -22,6 +23,8 @@ namespace MMO_RPG.Model
             {
                 Name = newItem.Name,
                 Id = Guid.NewGuid(),
+                Level = newItem.Level,
+                Type = newItem.Type,
                 CreationTime = DateTime.Now
             };
             return item;
@@ -33,6 +36,13 @@ namespace MMO_RPG.Model
         
         public bool IsDeleted { get; set; }
         
+        [Range(1, 99)]
+        public int Level { get; set; }
+        
+        [EnumDataType(typeof(ItemType))]
+        public ItemType Type { get; set; }
+        
+        [DateValidation]
         public DateTime CreationTime { get; set; }
     }
 }
