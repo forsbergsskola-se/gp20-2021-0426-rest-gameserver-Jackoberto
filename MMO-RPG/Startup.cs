@@ -40,6 +40,8 @@ namespace MMO_RPG
             app.UseRouting();
 
             app.UseAuthorization();
+            
+            app.UseMiddleware<ErrorHandlerMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {
