@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 namespace MMO_RPG.Controllers
 {
     [ApiController]
-    [Route("[controller]/players")]
+    [Route("api/players")]
     public class PlayerController : ControllerBase
     {
         private readonly IRepository repository;
@@ -20,42 +20,42 @@ namespace MMO_RPG.Controllers
             this.repository = repository;
         }
         
-        [HttpPost("New")]
+        [HttpPost("new")]
         public async Task<Player> NewPlayer(NewPlayer player)
         {
             var newPlayer = await repository.Create(player);
             return newPlayer;
         }
         
-        [HttpPut("Modify")]
+        [HttpPut("modify")]
         public async Task<Player> ModifyPlayer(Guid guid, ModifiedPlayer modifiedPlayer)
         {
             var newPlayer = await repository.Modify(guid, modifiedPlayer);
             return newPlayer;
         }
         
-        [HttpDelete("Delete")]
+        [HttpDelete("delete")]
         public async Task<Player> DeletePlayer(Guid guid)
         {
             var player = await repository.Delete(guid);
             return player;
         }
         
-        [HttpGet("Get/{id:guid}")]
+        [HttpGet("get/{id:guid}")]
         public async Task<Player> GetPlayer(Guid id)
         {
             var player = await repository.Get(id);
             return player;
         }
         
-        [HttpGet("Get/{name}")]
+        [HttpGet("get/{name}")]
         public async Task<Player> GetPlayer(string name)
         {
             var player = await repository.Get(name);
             return player;
         }
 
-        [HttpGet("GetAll")]
+        [HttpGet("get-all")]
         public async Task<IEnumerable<Player>> GetAll(int minScore)
         {
             var players = await repository.GetAll();
