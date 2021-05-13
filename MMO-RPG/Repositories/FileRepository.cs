@@ -18,6 +18,12 @@ namespace MMO_RPG
             return players.FirstOrDefault(player => player.Id == id);
         }
 
+        public async Task<Player> Get(string name)
+        {
+            var players = await GetAll();
+            return players.FirstOrDefault(player => player.Name == name);
+        }
+
         public async Task<List<Player>> GetAll()
         {
             var text = await File.ReadAllTextAsync(StoragePath);

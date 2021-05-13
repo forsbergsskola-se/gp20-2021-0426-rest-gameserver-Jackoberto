@@ -8,6 +8,7 @@ namespace MMO_RPG
     public interface IRepository
     {
         Task<Player> Get(Guid id);
+        Task<Player> Get(string name);
         Task<List<Player>> GetAll();
         Task<Player> Create(NewPlayer newPlayer);
         Task<Player> Modify(Guid id, ModifiedPlayer modifiedPlayer);

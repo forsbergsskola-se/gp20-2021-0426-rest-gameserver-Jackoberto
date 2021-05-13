@@ -35,6 +35,17 @@ namespace MMO_RPG
             return data;
         }
 
+        public async Task<Player> Get(string name)
+        {
+            var collection = Database.GetCollection<Player>("players");
+            var fieldDef = new StringFieldDefinition<Player, string>(nameof(Player.Name));
+            var filter = Builders<Player>.Filter.Eq(fieldDef, name);
+            var data = await collection.Find(filter).SingleOrDefaultAsync();
+            if (data is null)
+                throw new NotFoundException($"No Player Was Found With The Name {name}");
+            return data;
+        }
+
         public async Task<List<Player>> GetAll()
         {
             var collection = Database.GetCollection<Player>("players");
