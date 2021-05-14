@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using UnityEngine;
@@ -19,11 +20,8 @@ public class HttpHandler : IHttpHandler
     {
         var newPlayer = new NewPlayer {Name = name};
         var json = JsonConvert.SerializeObject(newPlayer);
-        var address = CombineUri(Client.BaseAddress.ToString(), "players/new");
-        Debug.Log(address);
-        var responseMessage = await Client.PostAsync(address, new StringContent(json));
-        var responseObject = JsonConvert.DeserializeObject<Player>(await responseMessage.Content.ReadAsStringAsync());
-        return responseObject;
+        var subUri = "players/new";
+        return await Post<Player>(json, subUri);
     }
 
     public async Task<Player[]> GetAllPlayers()
@@ -32,6 +30,14 @@ public class HttpHandler : IHttpHandler
         Debug.Log(address);
         var response = await Client.GetStringAsync(address);
         return JsonConvert.DeserializeObject<Player[]>(response);
+    }
+
+    private async Task<T> Post<T>(string json, string subUri)
+    {
+        var address = CombineUri(Client.BaseAddress.ToString(), subUri);
+        var responseMessage = await Client.PostAsync(address, new StringContent(json, Encoding.UTF8, "application/json"));
+        var responseObject = JsonConvert.DeserializeObject<T>(await responseMessage.Content.ReadAsStringAsync());
+        return responseObject;
     }
     
     public static string CombineUri(string uri1, string uri2)
