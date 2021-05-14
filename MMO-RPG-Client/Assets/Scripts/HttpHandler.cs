@@ -12,7 +12,7 @@ public class HttpHandler : IHttpHandler
     {
         Client = new HttpClient
         {
-            BaseAddress = new Uri("https://localhost:5001/api/")
+            BaseAddress = new Uri("https://localhost:5001/api/players")
         };
     }
 
@@ -20,19 +20,28 @@ public class HttpHandler : IHttpHandler
     {
         var newPlayer = new NewPlayer {Name = name};
         var json = JsonConvert.SerializeObject(newPlayer);
-        var subUri = "players/new";
-        return await Post<Player>(json, subUri);
+        return await Post<Player>(json);
     }
 
     public async Task<Player[]> GetAllPlayers()
     {
-        var address = CombineUri(Client.BaseAddress.ToString(), "players/get-all");
-        Debug.Log(address);
-        var response = await Client.GetStringAsync(address);
-        return JsonConvert.DeserializeObject<Player[]>(response);
+        return await Get<Player[]>();
     }
 
-    private async Task<T> Post<T>(string json, string subUri)
+    public async Task<Player> GetPlayer(string player)
+    {
+        return await Get<Player>("", player);
+    }
+
+    private async Task<T> Get<T>(string subUri = "", string parameter = "")
+    {
+        var address = CombineUri(CombineUri(Client.BaseAddress.ToString(), subUri), parameter);
+        Debug.Log(address);
+        var response = await Client.GetStringAsync(address);
+        return JsonConvert.DeserializeObject<T>(response);
+    }
+
+    private async Task<T> Post<T>(string json, string subUri = "")
     {
         var address = CombineUri(Client.BaseAddress.ToString(), subUri);
         var responseMessage = await Client.PostAsync(address, new StringContent(json, Encoding.UTF8, "application/json"));
@@ -42,6 +51,8 @@ public class HttpHandler : IHttpHandler
     
     public static string CombineUri(string uri1, string uri2)
     {
+        if (string.IsNullOrEmpty(uri2))
+            return uri1;
         uri1 = uri1.TrimEnd('/');
         uri2 = uri2.TrimStart('/');
         return $"{uri1}/{uri2}";

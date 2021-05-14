@@ -20,28 +20,28 @@ namespace MMO_RPG.Controllers
             this.repository = repository;
         }
         
-        [HttpPost("new")]
+        [HttpPost]
         public async Task<Player> NewPlayer(NewPlayer player)
         {
             var newPlayer = await repository.Create(player);
             return newPlayer;
         }
         
-        [HttpPut("modify")]
+        [HttpPut]
         public async Task<Player> ModifyPlayer(Guid guid, ModifiedPlayer modifiedPlayer)
         {
             var newPlayer = await repository.Modify(guid, modifiedPlayer);
             return newPlayer;
         }
         
-        [HttpDelete("delete")]
+        [HttpDelete]
         public async Task<Player> DeletePlayer(Guid guid)
         {
             var player = await repository.Delete(guid);
             return player;
         }
         
-        [HttpGet("get/{id:guid}")]
+        [HttpGet("{id:guid}")]
         public async Task<Player> GetPlayer(Guid id)
         {
             var player = await repository.Get(id);
@@ -50,7 +50,7 @@ namespace MMO_RPG.Controllers
             return player;
         }
         
-        [HttpGet("get/{name}")]
+        [HttpGet("{name}")]
         public async Task<Player> GetPlayer(string name)
         {
             var player = await repository.Get(name);
@@ -59,7 +59,7 @@ namespace MMO_RPG.Controllers
             return player;
         }
 
-        [HttpGet("get-all")]
+        [HttpGet]
         public async Task<IEnumerable<Player>> GetAll(int minScore)
         {
             var players = await repository.GetAll();
