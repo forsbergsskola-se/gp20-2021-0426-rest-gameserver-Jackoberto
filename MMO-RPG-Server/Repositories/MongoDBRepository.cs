@@ -56,6 +56,9 @@ namespace MMO_RPG
         public async Task<Player> Create(NewPlayer newPlayer)
         {
             var collection = Database.GetCollection<Player>("players");
+            var otherPlayer = await Get(newPlayer.Name);
+            if (otherPlayer != null)
+                throw new AlreadyExistException($"Player With Name {newPlayer.Name}");
             var player = Player.CreatePlayer(newPlayer);
             await collection.InsertOneAsync(player);
             return player;

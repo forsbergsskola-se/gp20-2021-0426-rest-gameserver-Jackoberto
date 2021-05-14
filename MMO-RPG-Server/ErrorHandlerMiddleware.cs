@@ -30,6 +30,7 @@ namespace MMO_RPG
                 response.StatusCode = error switch
                 {
                     NotFoundException e => (int) HttpStatusCode.NotFound,
+                    AlreadyExistException e => (int) HttpStatusCode.Conflict,
                     _ => (int) HttpStatusCode.InternalServerError
                 };
 
