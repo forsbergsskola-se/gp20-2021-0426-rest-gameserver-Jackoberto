@@ -30,8 +30,6 @@ namespace MMO_RPG
             var fieldDef = new StringFieldDefinition<Player, Guid>(nameof(Player.Id));
             var filter = Builders<Player>.Filter.Eq(fieldDef, id);
             var data = await collection.Find(filter).SingleOrDefaultAsync();
-            if (data is null)
-                throw new NotFoundException($"No Player Was Found With The GUID {id}");
             return data;
         }
 
@@ -41,8 +39,6 @@ namespace MMO_RPG
             var fieldDef = new StringFieldDefinition<Player, string>(nameof(Player.Name));
             var filter = Builders<Player>.Filter.Eq(fieldDef, name);
             var data = await collection.Find(filter).SingleOrDefaultAsync();
-            if (data is null)
-                throw new NotFoundException($"No Player Was Found With The Name {name}");
             return data;
         }
 
@@ -81,8 +77,6 @@ namespace MMO_RPG
             var filter = Builders<Player>.Filter.Eq(fieldDef, id);
             var update = Builders<Player>.Update.Push($"{nameof(Player.Inventory)}.{nameof(PlayerInventory.Items)}", Item.CreateItem(item));
             var result = await collection.FindOneAndUpdateAsync(filter, update, new FindOneAndUpdateOptions<Player>{ ReturnDocument = ReturnDocument.After, IsUpsert = false});
-            if (result == null)
-                throw new NotFoundException($"No Player Was Found With The GUID {id}");
             return result;
         }
 

@@ -45,6 +45,8 @@ namespace MMO_RPG.Controllers
         public async Task<Player> GetPlayer(Guid id)
         {
             var player = await repository.Get(id);
+            if (player is null)
+                throw new NotFoundException($"No Player Was Found With The GUID {id}");
             return player;
         }
         
@@ -52,6 +54,8 @@ namespace MMO_RPG.Controllers
         public async Task<Player> GetPlayer(string name)
         {
             var player = await repository.Get(name);
+            if (player is null)
+                throw new NotFoundException($"No Player Was Found With The Name {name}");
             return player;
         }
 

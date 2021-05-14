@@ -24,6 +24,8 @@ namespace MMO_RPG.Controllers
         public async Task<Player> NewItem(Guid playerId, NewItem item)
         {
             var player = await repository.AddItem(playerId, item);
+            if (player == null)
+                throw new NotFoundException($"No Player Was Found With The GUID {playerId}");
             return player;
         }
         

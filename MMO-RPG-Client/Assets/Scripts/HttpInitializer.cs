@@ -7,7 +7,7 @@ public class HttpInitializer : MonoBehaviour
     private void Awake()
     {
         HttpHandler = new HttpHandler();
-        var objects = FindObjectsOfType<MonoBehaviour>().OfType<INeedHttpHandler>();
+        var objects = FindObjectsOfType<MonoBehaviour>(true).OfType<INeedHttpHandler>();
         foreach (var obj in objects)
         {
             obj.HttpHandler = HttpHandler;
