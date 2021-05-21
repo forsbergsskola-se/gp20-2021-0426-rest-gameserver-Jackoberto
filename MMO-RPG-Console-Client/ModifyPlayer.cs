@@ -18,23 +18,37 @@ namespace MMO_RPG_Console_Client
             while (true)
             {
                 Console.WriteLine("Do You Wanna\n" +
-                                  "1: Change Player Score\n");
+                                  "1: Change Player Score\n" +
+                                  "2: Get Player Info\n"+
+                                  "3: Logout");
                 input = Console.ReadLine();
-                if (input == "1")
+                switch (input)
                 {
-                    ModifiedPlayer modifiedPlayer = null;
-                    do
+                    case "1":
                     {
-                        Console.WriteLine("Write a score");
-                        input = Console.ReadLine();
-                        if (int.TryParse(input, out var result))
+                        ModifiedPlayer modifiedPlayer = null;
+                        do
                         {
-                            modifiedPlayer = new ModifiedPlayer() {Score = result};
-                        }
-                    } while (modifiedPlayer == null);
+                            Console.WriteLine("Write a score");
+                            input = Console.ReadLine();
+                            if (int.TryParse(input, out var result))
+                            {
+                                modifiedPlayer = new ModifiedPlayer() {Score = result};
+                            }
+                        } while (modifiedPlayer == null);
 
-                    player = await HttpHandler.ModifyPlayer(modifiedPlayer, player.Id);
-                    return player;
+                        player = await HttpHandler.ModifyPlayer(modifiedPlayer, player.Id);
+                        return player;
+                    }
+                    case "2":
+                    {
+                        Console.WriteLine(player.ToString());
+                        break;
+                    }
+                    case "3":
+                    {
+                        return null;
+                    }
                 }
             }
         }

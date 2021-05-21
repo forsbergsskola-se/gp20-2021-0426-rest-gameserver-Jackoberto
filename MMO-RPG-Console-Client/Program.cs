@@ -16,7 +16,10 @@ namespace MMO_RPG_Console_Client
             createPlayer = new CreatePlayer(httpHandler);
             getPlayer = new GetPlayer(httpHandler);
             modifyPlayer = new ModifyPlayer(httpHandler);
-            await Run();
+            while (true)
+            {
+                await Run();
+            }
         }
 
         static async Task Run()
@@ -38,6 +41,8 @@ namespace MMO_RPG_Console_Client
             while (true)
             {
                 player = await modifyPlayer.Run(player);
+                if (player == null)
+                    break;
             }
         }
     }
