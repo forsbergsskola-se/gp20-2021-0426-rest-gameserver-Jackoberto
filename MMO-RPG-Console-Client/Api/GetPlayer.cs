@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MMO_RPG_Console_Client
+namespace MMO_RPG_Console_Client.Api
 {
     public class GetPlayer : IPlayerProvider
     {

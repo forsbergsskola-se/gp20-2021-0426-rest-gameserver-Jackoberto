@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace MMO_RPG_Console_Client
+namespace MMO_RPG_Console_Client.Api
 {
     public class CreatePlayer : IPlayerProvider
     {
@@ -31,10 +31,5 @@ namespace MMO_RPG_Console_Client
         {
             return await HttpHandler.CreatePlayer(new NewPlayer{Name = name});
         }
-    }
-
-    public interface IPlayerProvider
-    {
-        public Task<Player> Run();
     }
 }

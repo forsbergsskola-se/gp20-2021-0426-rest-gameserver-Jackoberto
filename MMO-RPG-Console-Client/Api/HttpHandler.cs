@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace MMO_RPG_Console_Client
+namespace MMO_RPG_Console_Client.Api
 {
     public class HttpHandler : IHttpHandler
     {

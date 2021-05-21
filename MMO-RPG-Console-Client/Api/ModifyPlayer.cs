@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace MMO_RPG_Console_Client
+namespace MMO_RPG_Console_Client.Api
 {
     public class ModifyPlayer
     {

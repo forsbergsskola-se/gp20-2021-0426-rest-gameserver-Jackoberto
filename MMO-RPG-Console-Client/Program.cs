@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using MMO_RPG_Console_Client.Api;
 
 namespace MMO_RPG_Console_Client
 {
