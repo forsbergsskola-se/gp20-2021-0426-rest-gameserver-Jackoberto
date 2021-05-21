@@ -17,11 +17,9 @@ namespace MMO_RPG_Console_Client
             };
         }
 
-        public async Task<Player> CreatePlayer(string name)
+        public async Task<Player> CreatePlayer(NewPlayer player)
         {
-            var newPlayer = new NewPlayer {Name = name};
-            var json = JsonConvert.SerializeObject(newPlayer);
-            return await Post<Player>(json);
+            return await Post<Player>(player);
         }
 
         public async Task<Player[]> GetAllPlayers()
@@ -34,17 +32,30 @@ namespace MMO_RPG_Console_Client
             return await Get<Player>("", player);
         }
 
+        public async Task<Player> ModifyPlayer(ModifiedPlayer player, Guid guid)
+        {
+            return await Put<Player>(player, $"?guid={guid}");
+        }
+
         private async Task<T> Get<T>(string subUri = "", string parameter = "")
         {
             var address = CombineUri(CombineUri(Client.BaseAddress!.ToString(), subUri), parameter);
             var response = await Client.GetStringAsync(address);
             return JsonConvert.DeserializeObject<T>(response);
         }
-
-        private async Task<T> Post<T>(string json, string subUri = "")
+        
+        private async Task<T> Put<T>(object content, string subUri = "")
         {
             var address = CombineUri(Client.BaseAddress!.ToString(), subUri);
-            var responseMessage = await Client.PostAsync(address, new StringContent(json, Encoding.UTF8, "application/json"));
+            var responseMessage = await Client.PutAsync(address, new StringContent(JsonConvert.SerializeObject(content), Encoding.UTF8, "application/json"));
+            var responseObject = JsonConvert.DeserializeObject<T>(await responseMessage.Content.ReadAsStringAsync());
+            return responseObject;
+        }
+
+        private async Task<T> Post<T>(object content, string subUri = "")
+        {
+            var address = CombineUri(Client.BaseAddress!.ToString(), subUri);
+            var responseMessage = await Client.PostAsync(address, new StringContent(JsonConvert.SerializeObject(content), Encoding.UTF8, "application/json"));
             var responseObject = JsonConvert.DeserializeObject<T>(await responseMessage.Content.ReadAsStringAsync());
             return responseObject;
         }

@@ -35,7 +35,7 @@ namespace MMO_RPG_Console_Client
             return player;
         }
 
-        public async Task<Player> Get()
+        private async Task<Player> Get()
         {
             Console.WriteLine("Type Your Name Or ID");
             Player player;
@@ -52,7 +52,7 @@ namespace MMO_RPG_Console_Client
             return player;
         }
     
-        public async Task GetAll()
+        private async Task GetAll()
         {
             var players = await HttpHandler.GetAllPlayers();
             var s = players.Aggregate(string.Empty, (current, player) => current + player.Name + "\n");

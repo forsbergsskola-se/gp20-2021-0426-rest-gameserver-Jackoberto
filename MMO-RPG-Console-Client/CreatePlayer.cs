@@ -27,9 +27,9 @@ namespace MMO_RPG_Console_Client
             return player;
         }
 
-        public async Task<Player> Create(string name)
+        private async Task<Player> Create(string name)
         {
-            return await HttpHandler.CreatePlayer(name);
+            return await HttpHandler.CreatePlayer(new NewPlayer{Name = name});
         }
     }
 

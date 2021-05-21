@@ -7,6 +7,7 @@ namespace MMO_RPG_Console_Client
     {
         private static IPlayerProvider createPlayer;
         private static IPlayerProvider getPlayer;
+        private static ModifyPlayer modifyPlayer;
         private static Player player;
 
         static async Task Main(string[] args)
@@ -14,6 +15,7 @@ namespace MMO_RPG_Console_Client
             IHttpHandler httpHandler = new HttpHandler();
             createPlayer = new CreatePlayer(httpHandler);
             getPlayer = new GetPlayer(httpHandler);
+            modifyPlayer = new ModifyPlayer(httpHandler);
             await Run();
         }
 
@@ -32,7 +34,11 @@ namespace MMO_RPG_Console_Client
             {
                 player = await createPlayer.Run();
             }
-            Console.WriteLine(player.ToString());
+
+            while (true)
+            {
+                player = await modifyPlayer.Run(player);
+            }
         }
     }
 }
