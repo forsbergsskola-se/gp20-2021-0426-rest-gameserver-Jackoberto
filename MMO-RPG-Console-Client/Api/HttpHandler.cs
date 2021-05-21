@@ -37,6 +37,11 @@ namespace MMO_RPG_Console_Client.Api
             return await Put<Player>(player, $"?guid={guid}");
         }
 
+        public async Task<Player> AddItem(NewItem item, Guid guid)
+        {
+            return await Post<Player>(item, $"{guid}/items");
+        }
+
         private async Task<T> Get<T>(string subUri = "", string parameter = "")
         {
             var address = CombineUri(CombineUri(Client.BaseAddress!.ToString(), subUri), parameter);
