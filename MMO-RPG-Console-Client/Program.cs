@@ -28,16 +28,7 @@ namespace MMO_RPG_Console_Client
             Console.WriteLine("Do You Wanna Login Or Create A New Player \n" +
                               "1: Login \n" +
                               "2: Create \n");
-            var input = Console.ReadLine();
-            if (input == "1")
-            {
-                player = await getPlayer.Run();
-            }
-
-            if (input == "2")
-            {
-                player = await createPlayer.Run();
-            }
+            player = await GetPlayer();
 
             while (true)
             {
@@ -45,6 +36,22 @@ namespace MMO_RPG_Console_Client
                 if (player == null)
                     break;
             }
+        }
+
+        static async Task<Player> GetPlayer()
+        {
+            do
+            {
+                var input = Console.ReadLine();
+                player = input switch
+                {
+                    "1" => await getPlayer.Run(),
+                    "2" => await createPlayer.Run(),
+                    _ => player
+                };
+            } while (player == null);
+
+            return player;
         }
     }
 }
